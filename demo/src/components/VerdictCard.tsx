@@ -2,10 +2,37 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { Stat } from "./ui";
+import { CheckIcon } from "./icons";
 
 interface Props {
   visible: boolean;
 }
+
+const ACTIONS = [
+  "HOLD Etch-3 / Chamber C",
+  "Quarantine 5 affected lots",
+  "Recalibrate RF supply",
+];
+
+// Why the excursion slipped through, and what to change so it can't recur.
+const PREVENTIONS = [
+  {
+    title: "Add an RF trend rule",
+    detail:
+      "The alarm only checks absolute limits. Add an SPC rule that flags 3 consecutive rising RF readings — this drift built up over 2 hours and recovered before anyone looked.",
+  },
+  {
+    title: "Tighten the warning band",
+    detail:
+      "Warn at spec +0.10 kW (2.20) instead of waiting for the 2.25 alarm. A warning at 10:00 would have saved 4 of the 5 lots.",
+  },
+  {
+    title: "Cross-check sensors vs. inspection",
+    detail:
+      "Correlate chamber telemetry with inspection results every shift, so sub-alarm drift is caught in hours — not after 5 lots fail at final inspection.",
+  },
+];
 
 export default function VerdictCard({ visible }: Props) {
   const [showOrder, setShowOrder] = useState(false);
@@ -25,7 +52,7 @@ export default function VerdictCard({ visible }: Props) {
             <span className="inline-block h-2 w-2 rounded-full bg-red-500" />
             Root cause identified
           </div>
-          <h3 className="text-xl font-bold text-slate-900">
+          <h3 className="text-3xl font-bold text-slate-900">
             Etch-3 / Chamber C
           </h3>
           <p className="mt-2 max-w-2xl text-sm leading-relaxed text-slate-600">
@@ -42,6 +69,39 @@ export default function VerdictCard({ visible }: Props) {
         </div>
       </div>
 
+      <div className="mt-4 flex flex-wrap items-center gap-2 border-t border-slate-100 pt-4">
+        <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
+          Immediate actions
+        </span>
+        {ACTIONS.map((a) => (
+          <span
+            key={a}
+            className="rounded-lg border border-amber-300 bg-amber-50 px-3 py-1.5 text-xs font-semibold text-amber-700"
+          >
+            {a}
+          </span>
+        ))}
+      </div>
+
+      <div className="mt-4 border-t border-slate-100 pt-4">
+        <div className="mb-2 text-xs font-bold uppercase tracking-wider text-indigo-500">
+          Prevent recurrence — what to change
+        </div>
+        <div className="grid gap-3 lg:grid-cols-3">
+          {PREVENTIONS.map((p) => (
+            <div
+              key={p.title}
+              className="rounded-xl border border-indigo-100 bg-indigo-50/50 p-3"
+            >
+              <div className="text-sm font-bold text-slate-800">{p.title}</div>
+              <p className="mt-1 text-xs leading-relaxed text-slate-600">
+                {p.detail}
+              </p>
+            </div>
+          ))}
+        </div>
+      </div>
+
       <div className="mt-4 flex flex-wrap items-center gap-x-6 gap-y-2 border-t border-slate-100 pt-4">
         <Stat label="Affected lots" value="5" />
         <Stat label="Wafers at risk" value="27" />
@@ -49,9 +109,16 @@ export default function VerdictCard({ visible }: Props) {
         <button
           onClick={() => setShowOrder(true)}
           disabled={showOrder}
-          className="ml-auto rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-red-500 disabled:bg-slate-200 disabled:text-slate-400"
+          className="ml-auto flex items-center gap-1.5 rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-red-500 disabled:bg-slate-200 disabled:text-slate-400"
         >
-          {showOrder ? "Order generated ✓" : "Generate isolation order"}
+          {showOrder ? (
+            <>
+              Order generated
+              <CheckIcon className="h-3.5 w-3.5" />
+            </>
+          ) : (
+            "Generate isolation order"
+          )}
         </button>
       </div>
 
@@ -75,14 +142,5 @@ export default function VerdictCard({ visible }: Props) {
         </motion.div>
       )}
     </motion.div>
-  );
-}
-
-function Stat({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="text-sm">
-      <span className="text-slate-400">{label}: </span>
-      <span className="font-mono font-semibold text-slate-900">{value}</span>
-    </div>
   );
 }
