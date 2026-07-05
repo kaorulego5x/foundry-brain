@@ -4,11 +4,17 @@
 
 # Foundry Brain
 
-**An AI yield engineer for semiconductor fabs — Company Brain, built for the fab.**
+**The OS for the semiconductor factory.**
 
-*When yield suddenly drops, Foundry Brain walks the fab's three disconnected data systems, names the root-cause machine with evidence, recommends hold-or-ship, replays its investigation in a live UI — and remembers every case, getting better with each one.*
+**One OS, many skills** — one brain for the whole factory, extended skill by skill · **Sharpened on yield** — the factory's most critical metric is our first, deepest skill · **It improves itself** — a built-in loop learns from every case.
 
-Built at the [Compiled Global AI Hackathon](https://luma.com/compiled-4qzo?tk=wryZrQ) (YC RFS "Company Brain" theme).
+*When yield suddenly drops, Foundry Brain replaces the yield engineer: it reads the fab's three data systems, names the root-cause machine with evidence, recommends hold-or-ship, replays its investigation in a live UI — and remembers every case, getting better with each one.*
+
+Built at the [Compiled Global AI Hackathon](https://luma.com/compiled-4qzo?tk=wryZrQ) (Company Brain track, on G-Stack & G-Brain).
+
+**[Landing page](https://foundry-brain.vercel.app/landing)** · **[Live demo](https://foundry-brain.vercel.app/)** · **[Pitch deck](https://foundry-brain.vercel.app/slides.html)** · **[Pitch video](https://drive.google.com/file/d/1MBw3zP2_a7A0P9W6Gbg6ZVjxRbNwO1Vj/view)**
+
+<img src="docs/demo.gif" alt="Foundry Brain diagnosing a yield excursion: alert → 4-step investigation → root cause verdict" width="800" />
 
 </div>
 
@@ -32,24 +38,23 @@ The UI opens with the verdict already on screen: root cause **Etch-3 / Chamber C
 
 ## The problem
 
-Semiconductor fabs lose **$300–600B/year** to yield loss. When the good-chip rate suddenly drops (an *excursion*), someone must answer two questions fast:
+**Yield = good chips ÷ all chips made.** 90 good out of 100 is 90% yield — the other 10 are scrapped, pure loss. Fabs lose **$300–600B/year** this way, and yield is *the* KPI: Japan's nation-backed foundry **Rapidus** must climb from ~50% trial yield to the **80–90%** needed to ship 2nm at a profit by **2027**.
 
-1. **Which machine caused it?**
-2. **Should the lots in flight be held or shipped?**
+Making a chip takes **1,000+ steps** (coat a film → carve the pattern → polish it flat, repeated layer after layer). When yield drops, a **yield engineer** must answer two things: *which step caused it*, and *what to do next — hold the lot, tune the machine, or ship*. To do it, they cross three systems **by hand**:
 
-Today that someone is a human **yield engineer** ($100k–140k/yr, scarce, and their know-how walks out the door when they leave). The job is hard because the evidence is scattered across **three systems that don't share a key**:
-
-| System | What it records | Keyed by |
+| System | In plain words | Keyed by |
 |---|---|---|
-| Quality Inspection (Metrology) | film thickness & pass/fail per lot | `lot_id + wafer` |
-| Production History (MES) | which lot ran on which tool/chamber, when | `lot_id` |
-| Machine Sensors (FDC) | tool telemetry over time | `equipment + chamber + timestamp` — **no lot id at all** |
+| Machine Sensors (FDC) | **what the machine did** — temperature, pressure, power over time | `equipment + chamber + timestamp` — **no lot id at all** |
+| Production History (MES) | **where the wafer went** — which lot ran on which tool/chamber, when | `lot_id` |
+| Inspection Results (Metrology) | **how it turned out** — film thickness & pass/fail per lot | `lot_id + wafer` |
 
-Worse: the root cause is typically an **in-spec drift** — a parameter that wanders out of the process band but stays *under the alarm limit*, so no automated monitor ever fires. Joining these systems takes judgment, not a static JOIN — recipes change, lots split and merge, and the mapping is different every time.
+The systems don't share a key, and the root cause is typically an **in-spec drift** — out of the process band but *under the alarm limit*, so no monitor ever fires. **Every investigation takes days — so yield barely climbs.** Yield analysis is the **chokepoint of the semiconductor foundry**: it depends on a few slow, scarce artisans, and their know-how walks out the door when they leave.
 
-## The thesis
+## The solution
 
-**The expertise is a procedure plus memory, not a trained model.** A senior yield engineer's investigation is a repeatable playbook (*inspection → routing commonality → sensor telemetry → correlation → disposition*) informed by memory of past cases. Foundry Brain encodes the playbook as a **Claude Code skill** and the memory as **gbrain pages** — no training on confidential fab data (which fabs would never share anyway), and every reasoning step is **auditable**.
+**One human, days → Foundry Brain, minutes.** Diagnose in minutes, iterate faster, yield climbs faster. The AI runs the whole yield analysis — **Alert → Investigate → Diagnose → Decide → Report** — and the engineer just acts on the result: approve & execute.
+
+**Why this works without training data:** the expertise is a *procedure plus memory*, not a trained model. Foundry Brain encodes the yield engineer's playbook as a **Claude Code skill** and the memory as **gbrain pages** — no training on confidential fab data (which fabs would never share anyway), and every reasoning step is **auditable**.
 
 ---
 
@@ -65,7 +70,7 @@ Everything runs inside a **Claude Code agent**, structured on the GStack model �
 | **gbrain** (vector memory) | Persistent memory of past excursions: good examples and anti-patterns, tagged with a `quality` rating. Loaded *before* each investigation, written *after* it. |
 | **AI Yield Engineer** (`/ai-yield-engineer`) | The failure-analysis skill — a 4-step investigation playbook that stitches the three fab systems by reasoning. |
 | **Fab database** (`foundry-brain/data/`) | The shared data spine: MES / FDC / Metrology as CSVs (CSV/API in production). |
-| **Field engineer** (human) | Reports the yield alert or asks a question in chat; receives the verdict + HOLD recommendation, and rates the analysis in the replay UI. |
+| **Yield engineer** (human on the loop) | HOTL, not HITL: the engineer *asks and reviews* — reports the alert, receives the verdict + HOLD recommendation, and rates the analysis in the replay UI. The AI does the investigating. |
 
 The **visualizer** (Next.js) is a pure replay engine on top: the skill persists every investigation as a JSON record (`visualizer/public/analyses/`), and the UI re-renders any past run from that record — zero UI changes per new investigation.
 
@@ -89,7 +94,7 @@ It then prints a compact verdict card, saves the run as a JSON record, launches 
 
 > The data is synthetic (real fab data is a trade secret), but the *structure* of the problem is faithful: three disconnected key schemas, and a root cause hiding as a sub-alarm drift.
 
-## The memory loop (how the brain improves)
+## The memory loop — every good diagnosis makes the next one sharper
 
 ```
 investigate → persist analysis JSON → auto-eval → save to gbrain (quality: pending_review)
@@ -102,7 +107,7 @@ investigate → persist analysis JSON → auto-eval → save to gbrain (quality:
 
 - **Before** each run, the skill searches gbrain for `foundry-excursions/` (past analyses) and `foundry-patterns/` (reusable lessons) — memory informs hypotheses, but CSV evidence is still required.
 - **After** each run, `foundry-gbrain-save.py` stores the case and `foundry-eval-analysis.py` self-grades it.
-- **Human feedback closes the loop:** the 👍/👎 rating on the verdict card posts to `/api/feedback`, which writes `<id>.feedback.json` and calls `foundry-sync-feedback.py` to update the memory page's `quality` tag (`good` / `bad`). Bad analyses become anti-patterns the next investigation explicitly avoids.
+- **Human feedback closes the loop:** the Good/Bad rating on the verdict card posts to `/api/feedback`, which writes `<id>.feedback.json` and calls `foundry-sync-feedback.py` to update the memory page's `quality` tag. **Only good cases are served as examples** — bad ones become anti-patterns the next investigation explicitly avoids. So the next investigation starts smarter.
 
 This is the Company Brain claim made concrete: **the product compounds** — every excursion it sees makes the next diagnosis faster and sharper.
 
@@ -198,11 +203,15 @@ The gstack/gbrain layer appears in this project in two distinct roles:
 
 ---
 
-## Why this can be a company
+## No ceiling — the market only grows
 
-- **Cost pool:** yield-related loss is 5–10% of a ~$600B industry. One excursion costs $1–10M; a fab eats 5–15 per year. Cutting decision latency from hours to minutes is worth **$1–10M per fab per year**.
+| **$300–600B** | **~1,200** | **$500B+** |
+|---|---|---|
+| lost to defects every year | fabs worldwide | of new fabs being built |
+
+- **Wedge → Rapidus. Expand → new fabs. Global → every fab.** Greenfield fabs have zero tool lock-in and zero accumulated tribal knowledge — Foundry Brain *becomes* the tribal knowledge.
 - **Why now:** fabs could never share data to train a model — but a *procedural* agent needs no training data, only the playbook plus its own accumulating memory. That playbook is exactly what retires with senior engineers today.
-- **Wedge:** greenfield fabs (e.g. Rapidus, 2nm, 2027) with zero tool lock-in and zero accumulated tribal knowledge — Foundry Brain *becomes* the tribal knowledge.
+- **The reasons this was never solved — confidential data, cross-system complexity, artisan dependence — are exactly why it's a massive business.**
 - **Roadmap:** skill #1 ships here; *Hold-or-Ship*, *Drift Watch*, and *Commonality* are scaffolded on the same data spine, and the memory loop compounds across all of them.
 
 ---

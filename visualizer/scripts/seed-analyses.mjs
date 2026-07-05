@@ -4,8 +4,14 @@ import { cpSync, mkdirSync, readdirSync } from "fs";
 import { join, dirname } from "path";
 import { fileURLToPath } from "url";
 
+import { existsSync } from "fs";
+
 const visualizerRoot = join(dirname(fileURLToPath(import.meta.url)), "..");
-const src = join(visualizerRoot, "../.claude/skills/foundry-brain/fixtures/analyses");
+// primary source: the brain's fixtures; fallback: the in-app copy (used on
+// deploy hosts where .claude/ isn't uploaded)
+const brainSrc = join(visualizerRoot, "../.claude/skills/foundry-brain/fixtures/analyses");
+const localSrc = join(visualizerRoot, "scripts/seed-data");
+const src = existsSync(brainSrc) ? brainSrc : localSrc;
 const dest = join(visualizerRoot, "public/analyses");
 
 mkdirSync(dest, { recursive: true });

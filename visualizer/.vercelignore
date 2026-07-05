@@ -1,0 +1,4 @@
+# Overrides .gitignore for Vercel uploads — public/analyses/ must ship
+# (it's gitignored as runtime output, but the deployed demo needs the seed data).
+node_modules
+.next

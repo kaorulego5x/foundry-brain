@@ -35,9 +35,8 @@ next-env.d.ts
 .git.bak/
 visualizer/.git.bak/
 
-# agent-created analysis records (seed via: cd visualizer && npm run seed-analyses)
-visualizer/public/analyses/*
-!visualizer/public/analyses/.gitkeep
+# analysis JSONs ship with the deployed demo; only feedback sidecars stay untracked
+visualizer/public/analyses/*.feedback.json
 
 # analysis feedback (auto-eval, operator rating, API)
 **/*.feedback.json
@@ -45,3 +44,4 @@ visualizer/public/analyses/*
 # visualizer dev runtime
 visualizer/.next/
 foundry-brain-visualizer.log
+.env*.local
