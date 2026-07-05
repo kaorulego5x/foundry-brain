@@ -53,7 +53,9 @@ export default function WaferMap({ lotId, bad, yieldPct, delay = 0 }: Props) {
         bad ? "border-red-200" : "border-slate-200"
       }`}
     >
-      <svg width={size} height={size} className="mx-auto block">
+      {/* viewBox + fluid width so the wafer scales down inside narrow cards
+          instead of overflowing them */}
+      <svg viewBox={`0 0 ${size} ${size}`} className="mx-auto block h-auto w-full max-w-[128px]">
         {/* wafer disc */}
         <circle
           cx={size / 2}
