@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect, useRef } from "react";
+import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import WaferMap from "@/components/WaferMap";
 import FabFloor from "@/components/FabFloor";
@@ -156,9 +157,15 @@ export default function Home() {
     <div className="flex h-screen flex-col bg-[var(--background)]">
       <header className="flex shrink-0 items-center justify-between border-b border-slate-200 bg-white px-6 py-3">
         <div className="flex items-center gap-3">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-600 text-sm font-bold text-white">
-            FB
-          </div>
+          <Image
+            src="/appIcon.png"
+            alt="Foundry Brain"
+            width={32}
+            height={32}
+            className="h-8 w-8"
+            priority
+            unoptimized
+          />
           <h1 className="text-base font-bold tracking-tight text-slate-900">Foundry Brain</h1>
           <span className="ml-1 text-xs text-slate-400">built for the semiconductor fab</span>
         </div>
@@ -482,7 +489,9 @@ function SourceRail({ active }: { active: SourceId }) {
   return (
     <div className="mb-5 flex items-center gap-3 rounded-2xl border border-slate-200 bg-white p-3 shadow-sm">
       <div className="flex items-center gap-2 rounded-xl bg-indigo-600 px-3 py-2 text-white">
-        <span className="flex h-6 w-6 items-center justify-center rounded-md bg-white/20 text-xs font-bold">FB</span>
+        <span className="flex h-6 w-6 items-center justify-center rounded-md bg-white/85">
+          <Image src="/appIcon.png" alt="" width={18} height={18} className="h-[18px] w-[18px]" unoptimized />
+        </span>
         <div className="leading-tight">
           <div className="text-sm font-bold">Foundry Brain</div>
           <div className="text-[10px] text-indigo-200">reads across every system</div>
