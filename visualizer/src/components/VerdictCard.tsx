@@ -2,15 +2,19 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
+import type { Verdict } from "@/lib/analysis";
 
 interface Props {
   visible: boolean;
+  verdict: Verdict;
 }
 
-export default function VerdictCard({ visible }: Props) {
+export default function VerdictCard({ visible, verdict }: Props) {
   const [showOrder, setShowOrder] = useState(false);
 
   if (!visible) return null;
+
+  const o = verdict.isolationOrder;
 
   return (
     <motion.div
@@ -25,27 +29,19 @@ export default function VerdictCard({ visible }: Props) {
             <span className="inline-block h-2 w-2 rounded-full bg-red-500" />
             Root cause identified
           </div>
-          <h3 className="text-xl font-bold text-slate-900">
-            Etch-3 / Chamber C
-          </h3>
-          <p className="mt-2 max-w-2xl text-sm leading-relaxed text-slate-600">
-            RF power drifted to <b className="text-slate-900">2.31 kW</b> (spec
-            2.10 ±0.15) between 10:00–12:00. All 5 failing lots passed through
-            this one chamber in that window — the drift matches the −3.2 nm
-            thickness loss. It stayed under the alarm limit, so no alert ever
-            fired.
-          </p>
+          <h3 className="text-xl font-bold text-slate-900">{verdict.rootCause}</h3>
+          <p className="mt-2 max-w-2xl text-sm leading-relaxed text-slate-600">{verdict.narrative}</p>
         </div>
         <div className="shrink-0 text-right">
-          <div className="text-4xl font-bold text-red-600">97%</div>
+          <div className="text-4xl font-bold text-red-600">{verdict.confidence}%</div>
           <div className="text-xs text-slate-400">confidence</div>
         </div>
       </div>
 
       <div className="mt-4 flex flex-wrap items-center gap-x-6 gap-y-2 border-t border-slate-100 pt-4">
-        <Stat label="Affected lots" value="5" />
-        <Stat label="Wafers at risk" value="27" />
-        <Stat label="Est. exposure" value="~$2.1M" />
+        <Stat label="Affected lots" value={String(verdict.affectedLots)} />
+        <Stat label="Wafers at risk" value={String(verdict.wafersAtRisk)} />
+        <Stat label="Est. exposure" value={verdict.exposure} />
         <button
           onClick={() => setShowOrder(true)}
           disabled={showOrder}
@@ -61,16 +57,14 @@ export default function VerdictCard({ visible }: Props) {
           animate={{ opacity: 1, height: "auto" }}
           className="mt-4 overflow-hidden rounded-lg border border-slate-200 bg-slate-50 p-4 font-mono text-xs leading-relaxed text-slate-600"
         >
-          <div className="mb-2 font-bold text-amber-600">
-            ISOLATION ORDER #ISO-2026-0704-001
-          </div>
+          <div className="mb-2 font-bold text-amber-600">ISOLATION ORDER #{o.id}</div>
           <div className="space-y-1">
-            <div>Date: 2026-07-04 12:42 UTC</div>
-            <div>Equipment: Etch-3 / Chamber C</div>
-            <div>Action: HOLD — do not process new lots</div>
-            <div>Affected: LOT-0703, 0704, 0707, 0708, 0711</div>
-            <div>Root cause: RF power drift (2.31 kW avg, spec 2.10 ±0.15)</div>
-            <div>Fix: recalibrate RF supply, verify with test wafer</div>
+            <div>Date: {o.date}</div>
+            <div>Equipment: {o.equipment}</div>
+            <div>Action: {o.action}</div>
+            <div>Affected: {o.affected}</div>
+            <div>Root cause: {o.rootCause}</div>
+            <div>Fix: {o.fix}</div>
           </div>
         </motion.div>
       )}
