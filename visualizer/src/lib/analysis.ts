@@ -1,6 +1,7 @@
 // A single stored excursion analysis — everything the UI needs to *replay* a
-// past investigation. Records are written by the excursion-diagnosis skill into
-// public/analyses/<id>.json and listed in public/analyses/index.json.
+// past investigation. Records are written by the excursion-diagnosis skill via
+// the /api/analyses routes into data/analyses/<id>.json, listed in
+// data/analyses/index.json.
 
 import type { Column, Row } from "./demo-data";
 export type { Column, Row, RowState } from "./demo-data";
@@ -118,18 +119,43 @@ export interface AnalysisSummary {
   yieldDeltaPct: number;
 }
 
-const BASE = "/analyses";
+const BASE = "/api/analyses";
 
 export async function loadIndex(): Promise<AnalysisSummary[]> {
-  const res = await fetch(`${BASE}/index.json`, { cache: "no-store" });
-  if (!res.ok) throw new Error(`index.json ${res.status}`);
+  const res = await fetch(BASE, { cache: "no-store" });
+  if (!res.ok) throw new Error(`GET ${BASE} ${res.status}`);
   const list = (await res.json()) as AnalysisSummary[];
   // newest first
   return [...list].sort((a, b) => b.timestamp.localeCompare(a.timestamp));
 }
 
 export async function loadAnalysis(id: string): Promise<Analysis> {
-  const res = await fetch(`${BASE}/${id}.json`, { cache: "no-store" });
-  if (!res.ok) throw new Error(`${id}.json ${res.status}`);
+  const res = await fetch(`${BASE}/${id}`, { cache: "no-store" });
+  if (!res.ok) throw new Error(`GET ${BASE}/${id} ${res.status}`);
   return (await res.json()) as Analysis;
+}
+
+export async function createAnalysis(analysis: Analysis): Promise<AnalysisSummary> {
+  const res = await fetch(BASE, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(analysis),
+  });
+  if (!res.ok) throw new Error(`POST ${BASE} ${res.status}`);
+  return (await res.json()) as AnalysisSummary;
+}
+
+export async function updateAnalysis(id: string, analysis: Analysis): Promise<AnalysisSummary> {
+  const res = await fetch(`${BASE}/${id}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(analysis),
+  });
+  if (!res.ok) throw new Error(`PUT ${BASE}/${id} ${res.status}`);
+  return (await res.json()) as AnalysisSummary;
+}
+
+export async function deleteAnalysis(id: string): Promise<void> {
+  const res = await fetch(`${BASE}/${id}`, { method: "DELETE" });
+  if (!res.ok) throw new Error(`DELETE ${BASE}/${id} ${res.status}`);
 }

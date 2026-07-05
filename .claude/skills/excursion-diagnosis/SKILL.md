@@ -86,13 +86,16 @@ into the history store so it appears in the UI's "Replay analysis" selector:
 
 1. Build a record matching the `Analysis` schema in
    `visualizer/src/lib/analysis.ts`. Use the existing
-   `visualizer/public/analyses/2026-07-04-etch3c.json` as a template and fill it with
+   `visualizer/data/analyses/2026-07-04-etch3c.json` as a template and fill it with
    THIS run's findings (tables you queried, failing lots, steps, fab-floor
    routing, RF series, suspects, verdict).
-2. Save it as `visualizer/public/analyses/<id>.json` where `<id>` is a slug like
+2. With the visualizer dev server running (see below), `POST` the record as JSON
+   to `http://localhost:3000/api/analyses` — the route writes
+   `visualizer/data/analyses/<id>.json` and prepends the summary entry to
+   `visualizer/data/analyses/index.json` for you. `<id>` should be a slug like
    `2026-07-05-<culprit>` (keep it unique — do not overwrite an existing record).
-3. Prepend a summary entry to `visualizer/public/analyses/index.json`:
-   `{ "id", "timestamp", "query", "rootCause", "yieldDeltaPct" }`.
+   If the server isn't up yet, you may instead write both files directly under
+   `visualizer/data/analyses/` and start the server afterward.
 
 If the current run is just the canonical Etch-3/C scenario, the seed record
 already exists — skip writing and reuse it.
@@ -108,7 +111,8 @@ cd visualizer && (npm run dev >/tmp/foundry-brain-visualizer.log 2>&1 &) && slee
 
 - If dependencies are missing, run `npm install` in `visualizer/` first.
 - `visualizer/AGENTS.md` notes this is a modified Next.js — do not edit visualizer source as
-  part of this skill; only run it and write JSON records under `visualizer/public/`.
+  part of this skill; only run it, and persist records via the `/api/analyses` routes
+  (or by writing JSON directly under `visualizer/data/analyses/`).
 - Tell the user to open **http://localhost:3000**, pick this run from the
   **Replay analysis** selector, and press **Replay investigation**; the UI walks
   the same four steps (Inspection → Production History → Sensors → Correlation →
