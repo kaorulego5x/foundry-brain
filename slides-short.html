@@ -120,6 +120,138 @@
         margin-top: 48px;
       }
 
+      /* ═══ Company Brain — track + stack ═══ */
+      .trackbadge {
+        display: inline-block;
+        align-self: flex-start;
+        background: var(--blue);
+        color: #fff;
+        font-size: 20px;
+        font-weight: 800;
+        padding: 9px 22px;
+        border-radius: 999px;
+        letter-spacing: 1px;
+        margin-bottom: 16px;
+      }
+      .intro-sub {
+        font-size: 28px;
+        color: var(--text2);
+        margin-top: 20px;
+        line-height: 1.45;
+        max-width: 1000px;
+      }
+      .intro-sub b {
+        color: var(--text);
+        font-weight: 700;
+      }
+      .pipe {
+        display: flex;
+        gap: 18px;
+        margin-top: 32px;
+        align-items: stretch;
+      }
+      .pcard {
+        flex: 1;
+        background: var(--card);
+        border-radius: 20px;
+        padding: 30px 26px;
+        display: flex;
+        flex-direction: column;
+      }
+      .pcard .ico {
+        font-size: 52px;
+        line-height: 1;
+      }
+      .pcard h3 {
+        font-size: 32px;
+        font-weight: 800;
+        letter-spacing: -1px;
+        margin-top: 12px;
+      }
+      .pcard p {
+        font-size: 21px;
+        color: var(--text2);
+        margin-top: 8px;
+        line-height: 1.4;
+        flex: 1;
+      }
+
+      /* ═══ Yield explainer ═══ */
+      .yield-wrap {
+        display: flex;
+        align-items: center;
+        gap: 64px;
+        margin-top: 32px;
+      }
+      .wafer {
+        width: 300px;
+        height: 300px;
+        border-radius: 50%;
+        background: #e5e5ea;
+        padding: 16px;
+        display: grid;
+        grid-template-columns: repeat(8, 1fr);
+        grid-template-rows: repeat(8, 1fr);
+        gap: 5px;
+        flex-shrink: 0;
+        overflow: hidden;
+        border: 4px solid var(--border);
+      }
+      .wafer i {
+        border-radius: 3px;
+        background: var(--green);
+      }
+      .wafer i.bad {
+        background: var(--red);
+      }
+      .yield-def {
+        flex: 1;
+      }
+      .frac-eq {
+        display: flex;
+        align-items: center;
+        gap: 22px;
+      }
+      .frac {
+        display: inline-flex;
+        flex-direction: column;
+        text-align: center;
+        font-size: 32px;
+        font-weight: 800;
+      }
+      .frac .num {
+        color: var(--green);
+        padding: 0 12px 12px;
+      }
+      .frac .den {
+        border-top: 3px solid var(--text);
+        padding: 12px 12px 0;
+      }
+      .frac-eq .eq {
+        font-size: 46px;
+        font-weight: 800;
+        color: var(--text3);
+      }
+      .frac-eq .res {
+        font-size: 46px;
+        font-weight: 900;
+        letter-spacing: -1px;
+      }
+      .yield-def .eg {
+        font-size: 26px;
+        color: var(--text2);
+        margin-top: 30px;
+        line-height: 1.4;
+      }
+      .yield-def .eg b {
+        color: var(--text);
+        font-weight: 800;
+      }
+      .yield-def .eg .rd {
+        color: var(--red);
+        font-weight: 800;
+      }
+
       /* ═══ Before / After panels ═══ */
       .ba {
         display: grid;
@@ -710,6 +842,101 @@
         font-weight: 700;
       }
 
+      /* ═══ Pain — 3 systems joined by hand ═══ */
+      .dcard .desc {
+        font-size: 18px;
+        color: var(--text2);
+        margin-top: 8px;
+        line-height: 1.4;
+      }
+      .byhand {
+        margin-top: 26px;
+        background: rgba(215, 0, 21, 0.05);
+        border: 1.5px solid rgba(215, 0, 21, 0.25);
+        border-radius: 14px;
+        padding: 16px 28px;
+        font-size: 24px;
+        color: var(--text2);
+        font-weight: 600;
+        text-align: center;
+      }
+      .byhand b {
+        color: var(--red);
+        font-weight: 800;
+      }
+
+      /* ═══ Architecture — agents ↔ data + memory ═══ */
+      .arch2 {
+        display: flex;
+        align-items: stretch;
+        gap: 20px;
+        margin-top: 40px;
+      }
+      .arch2 .node {
+        flex: 1;
+        background: var(--card);
+        border-radius: 18px;
+        padding: 32px 22px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        font-size: 60px;
+        line-height: 1;
+      }
+      .arch2 .node span {
+        font-size: 26px;
+        font-weight: 800;
+        margin-top: 14px;
+        letter-spacing: -0.5px;
+      }
+      .arch2 .node em {
+        font-size: 18px;
+        font-style: normal;
+        color: var(--text2);
+        font-weight: 600;
+        margin-top: 6px;
+      }
+      .arch2 .node.brain {
+        background: rgba(0, 102, 204, 0.08);
+        border: 2px solid var(--blue);
+      }
+      .arch2 .node.brain span {
+        color: var(--blue);
+      }
+      .arch2 .arrow {
+        display: flex;
+        align-items: center;
+        font-size: 44px;
+        color: var(--text3);
+      }
+      .memloop {
+        margin-top: 28px;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        justify-content: center;
+        background: rgba(36, 138, 61, 0.07);
+        border-radius: 16px;
+        padding: 20px 28px;
+      }
+      .memloop .ml-ico {
+        font-size: 40px;
+        color: var(--green);
+      }
+      .memloop p {
+        font-size: 24px;
+        color: var(--text2);
+        font-weight: 600;
+      }
+      .memloop p b {
+        color: var(--text);
+        font-weight: 800;
+      }
+      .memloop p b.gr {
+        color: var(--green);
+      }
+
       /* ═══ Nav ═══ */
       .nav {
         position: fixed;
@@ -749,17 +976,42 @@
     <div class="slide s-title active">
       <h1>Foundry Brain</h1>
       <div class="tag">
-        An <em>AI OS for semiconductor factories.</em><br />
-        We start with yield analysis &mdash; because yield decides whether a fab
-        is profitable.
+        An <em>AI OS for semiconductor factories.</em>
       </div>
       <div class="meta">Transpose &times; Ritsumeikan University &times; OUVC</div>
     </div>
 
-    <!-- 2 · Problem -->
+    <!-- 2 · Company Brain -->
+    <div class="slide">
+      <span class="trackbadge">🏆 OUR TRACK · COMPANY BRAIN</span>
+      <h2>An AI operating system <span class="sub">for the fab.</span></h2>
+      <p class="intro-sub">
+        A <b>Company Brain</b> built on <b>G-Stack</b> &amp; <b>G-Brain</b> &mdash;
+        starting with the fab's most critical workflow, <b>yield analysis</b>,
+        because yield decides whether advanced manufacturing is profitable.
+      </p>
+      <div class="pipe">
+        <div class="pcard">
+          <div class="ico">🧱</div>
+          <h3>G-Stack</h3>
+          <p>The agent skill suite Foundry Brain runs on.</p>
+        </div>
+        <div class="pcard">
+          <div class="ico">🧠</div>
+          <h3>G-Brain</h3>
+          <p>The persistent memory that stores &amp; recalls fab knowledge.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3 · Problem · Rapidus -->
     <div class="slide">
       <div class="label">Problem</div>
-      <h2>Fabs need 80&ndash;90% yield <span class="sub">by 2027.</span></h2>
+      <h2>Rapidus races to 2nm chips <span class="sub">by 2027.</span></h2>
+      <p class="intro-sub">
+        Japan's nation-backed foundry &mdash; and <b>yield</b> is the
+        make-or-break KPI.
+      </p>
       <div class="ba">
         <div class="ba-side before">
           <div class="k">Today</div>
@@ -774,8 +1026,39 @@
         </div>
       </div>
       <div class="stall">
-        But engineers still spend <b class="rd">days</b> finding defects across
+        Yet defects still take <b class="rd">days</b> to find across
         <b>1,000+ steps.</b>
+      </div>
+    </div>
+
+    <!-- 3 · What is yield -->
+    <div class="slide">
+      <h2>What is <span class="sub">"yield"?</span></h2>
+      <div class="yield-wrap">
+        <div class="wafer">
+          <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i> <i></i><i></i
+          ><i></i><i class="bad"></i><i></i><i></i><i></i><i></i> <i></i><i></i
+          ><i></i><i></i><i></i><i></i><i class="bad"></i><i></i> <i></i
+          ><i class="bad"></i><i></i><i></i><i></i><i></i><i></i><i></i> <i></i
+          ><i></i><i></i><i></i><i class="bad"></i><i></i><i></i><i></i> <i></i
+          ><i></i><i class="bad"></i><i></i><i></i><i></i><i></i><i></i> <i></i
+          ><i></i><i></i><i></i><i></i><i></i><i class="bad"></i><i></i> <i></i
+          ><i class="bad"></i><i></i><i></i><i></i><i></i><i></i><i></i>
+        </div>
+        <div class="yield-def">
+          <div class="frac-eq">
+            <div class="frac">
+              <span class="num">good chips</span>
+              <span class="den">all chips made</span>
+            </div>
+            <span class="eq">=</span>
+            <span class="res">yield</span>
+          </div>
+          <div class="eg">
+            e.g. <b>90</b> good out of <b>100</b> = <b>90% yield</b><br />
+            the other <span class="rd">10 are scrapped</span> &mdash; pure loss.
+          </div>
+        </div>
       </div>
     </div>
 
@@ -788,38 +1071,24 @@
           <div class="ico">📡</div>
           <div class="angle">What the machine did</div>
           <h3>Sensor Data</h3>
-          <div class="tabtag">🗄️ TABLE</div>
-          <table class="minitab">
-            <tr><th>time</th><th>machine</th><th>kW</th></tr>
-            <tr><td>11:00</td><td>Etch-3</td><td class="bad">2.31</td></tr>
-            <tr><td>13:00</td><td>Etch-3</td><td>2.12</td></tr>
-          </table>
+          <p class="desc">Temperature, power, pressure — millions of rows a day.</p>
         </div>
         <div class="dcard">
           <div class="ico">🏭</div>
           <div class="angle">Where the wafer went</div>
           <h3>Production History</h3>
-          <div class="tabtag">🗄️ TABLE</div>
-          <table class="minitab">
-            <tr><th>lot</th><th>machine</th></tr>
-            <tr><td>L-0704</td><td>Etch-3 / C</td></tr>
-            <tr><td>L-0708</td><td>Etch-3 / C</td></tr>
-          </table>
+          <p class="desc">Which lot ran on which machine, and when.</p>
         </div>
         <div class="dcard">
           <div class="ico">🔬</div>
           <div class="angle">How it turned out</div>
           <h3>Inspection Results</h3>
-          <div class="tabtag">🗄️ TABLE</div>
-          <table class="minitab">
-            <tr><th>lot</th><th>nm</th><th>result</th></tr>
-            <tr><td>L-0704</td><td>44.8</td><td class="bad">✗ fail</td></tr>
-            <tr><td>L-0701</td><td>48.3</td><td class="ok">✓ pass</td></tr>
-          </table>
+          <p class="desc">Which lots passed, which failed spec.</p>
         </div>
       </div>
-      <div class="stall">
-        Today, engineers check all three <b class="rd">by hand.</b>
+      <div class="byhand">
+        🧑‍🔧&nbsp; Engineers cross-check all three <b>by hand</b> &mdash; for
+        <b>days</b>.
       </div>
     </div>
 
@@ -848,16 +1117,12 @@
     <div class="slide">
       <div class="label">Product loop</div>
       <h2>Detect &rarr; Diagnose &rarr; Decide.</h2>
-      <div class="feeds">
-        <div class="af-dbs">
-          <div class="af-db">📡 Sensor Data</div>
-          <div class="af-db">🏭 Production History</div>
-          <div class="af-db">🔬 Inspection Results</div>
-        </div>
-        <div class="note">reads all three systems, automatically &nbsp;&darr;</div>
-      </div>
+      <p class="lead">
+        Foundry Brain detects a yield drop, investigates the data, finds the
+        cause, recommends an action, and writes the report.
+      </p>
       <div class="ai-panel">
-        <span class="ai-tab">🤖 Foundry Brain &middot; every step, done by AI</span>
+        <span class="ai-tab">🤖 every step, done by AI</span>
         <div class="agent-flow">
           <div class="af-step ai"><div class="ico">🚨</div><h3>Detect</h3><p>Yield dropped</p></div>
           <div class="af-arr">&rarr;</div>
@@ -912,45 +1177,20 @@
     <!-- 7 · Architecture -->
     <div class="slide">
       <div class="label">Architecture</div>
-      <h2>Agents on fab data, <span class="sub">memory that learns.</span></h2>
-      <div class="hotl-banner">🧑‍🔧 HOTL &mdash; Human on the Loop</div>
-      <div class="arch">
-        <div class="arch-eng">
-          <div class="ico">🧑‍🔧</div>
-          <h3>Yield Engineer</h3>
-          <p>ask &amp; review</p>
-        </div>
-        <div class="arch-link"><div class="a">&harr;</div></div>
-        <div class="fb">
-          <span class="fb-label">Foundry Brain</span>
-          <div class="cc">
-            <span class="cc-label">Claude Code</span>
-            <div class="arch-grid">
-              <div class="chip blue">🎯 Fault Analysis</div>
-              <div class="chip">🧱 G-Stack</div>
-              <div class="chip blue">🧠 G-Brain</div>
-            </div>
-          </div>
-          <div class="conn-row">
-            <div class="conn"><div class="line solo"></div></div>
-            <div></div>
-            <div class="conn"><div class="line solo"></div></div>
-          </div>
-          <div class="arch-grid">
-            <div class="store">
-              <h4>🗄️ SQL Data</h4>
-              <p>Sensors · Production · Inspection</p>
-            </div>
-            <div></div>
-            <div class="store">
-              <h4>🔎 Vector DB</h4>
-              <p>Past analyses</p>
-            </div>
-          </div>
-        </div>
+      <h2>Agents connect to fab data, <span class="sub">and remember.</span></h2>
+      <div class="arch2">
+        <div class="node">🧑‍🔧<span>Yield Engineer</span><em>ask &amp; review</em></div>
+        <div class="arrow">&harr;</div>
+        <div class="node brain">🤖<span>Foundry Brain</span><em>AI agents</em></div>
+        <div class="arrow">&rarr;</div>
+        <div class="node">🗄️<span>Fab Databases</span><em>Sensors · Production · Inspection</em></div>
       </div>
-      <div class="stall">
-        Its memory <b class="gr">improves after every investigation.</b>
+      <div class="memloop">
+        <span class="ml-ico">&#8635;</span>
+        <p>
+          Every investigation is saved to <b>🧠 memory</b> &mdash; so the
+          <b class="gr">next one starts sharper.</b>
+        </p>
       </div>
     </div>
 
@@ -983,7 +1223,7 @@
     </div>
 
     <div class="nav" id="nav"></div>
-    <div class="sn" id="sn">1 / 9</div>
+    <div class="sn" id="sn">1 / 11</div>
     <script>
       const ss = document.querySelectorAll(".slide"),
         nav = document.getElementById("nav"),
