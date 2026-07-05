@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import type { Verdict } from "@/lib/analysis";
+import { CheckIcon } from "./icons";
 
 interface Props {
   visible: boolean;
@@ -45,9 +46,16 @@ export default function VerdictCard({ visible, verdict }: Props) {
         <button
           onClick={() => setShowOrder(true)}
           disabled={showOrder}
-          className="ml-auto rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-red-500 disabled:bg-slate-200 disabled:text-slate-400"
+          className="ml-auto flex items-center gap-1.5 rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-red-500 disabled:bg-slate-200 disabled:text-slate-400"
         >
-          {showOrder ? "Order generated ✓" : "Generate isolation order"}
+          {showOrder ? (
+            <>
+              Order generated
+              <CheckIcon className="h-3.5 w-3.5" />
+            </>
+          ) : (
+            "Generate isolation order"
+          )}
         </button>
       </div>
 
