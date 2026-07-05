@@ -12,7 +12,7 @@
 
 Built at the [Compiled Global AI Hackathon](https://luma.com/compiled-4qzo?tk=wryZrQ) (Company Brain track, on G-Stack & G-Brain).
 
-**[Landing page](https://foundry-brain.vercel.app/landing)** · **[Live demo](https://foundry-brain.vercel.app/)** · **[Pitch deck](https://foundry-brain.vercel.app/slides.html)** · **[Pitch video](https://drive.google.com/file/d/1MBw3zP2_a7A0P9W6Gbg6ZVjxRbNwO1Vj/view)**
+**[Landing page](https://foundry-brain.vercel.app/landing)** · **[Live demo](https://foundry-brain.vercel.app/)** · **[Pitch deck](https://foundry-brain.vercel.app/slides.html)** · **[Pitch video](https://drive.google.com/file/d/1lMrOz0BlUc8qfjeQgwoEQ_6vatHHjzik/view)**
 
 <img src="docs/demo.gif" alt="Foundry Brain diagnosing a yield excursion: alert → 4-step investigation → root cause verdict" width="800" />
 
