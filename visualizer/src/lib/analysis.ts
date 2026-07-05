@@ -118,6 +118,16 @@ export interface AnalysisSummary {
   yieldDeltaPct: number;
 }
 
+export interface AnalysisFeedback {
+  analysis_id: string;
+  rating: "good" | "bad" | "partial" | "pending_review";
+  reviewer: "operator" | "auto";
+  timestamp: string;
+  ground_truth_match?: boolean;
+  failure_tags?: string[];
+  notes?: string;
+}
+
 const BASE = "/analyses";
 
 export async function loadIndex(): Promise<AnalysisSummary[]> {

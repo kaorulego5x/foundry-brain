@@ -4,6 +4,10 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "dev:start": "bash scripts/dev-server.sh start",
+    "dev:stop": "bash scripts/dev-server.sh stop",
+    "dev:restart": "bash scripts/dev-server.sh restart",
+    "dev:status": "bash scripts/dev-server.sh status",
     "build": "next build",
     "start": "next start",
     "lint": "eslint"

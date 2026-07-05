@@ -8,10 +8,22 @@ import { CheckIcon } from "./icons";
 interface Props {
   visible: boolean;
   verdict: Verdict;
+  analysisId?: string;
 }
 
-export default function VerdictCard({ visible, verdict }: Props) {
+export default function VerdictCard({ visible, verdict, analysisId }: Props) {
   const [showOrder, setShowOrder] = useState(false);
+  const [rated, setRated] = useState<string | null>(null);
+
+  async function submitRating(rating: "good" | "bad") {
+    if (!analysisId || rated) return;
+    setRated(rating);
+    await fetch("/api/feedback", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ analysisId, rating }),
+    }).catch(() => {});
+  }
 
   if (!visible) return null;
 
@@ -58,6 +70,28 @@ export default function VerdictCard({ visible, verdict }: Props) {
           )}
         </button>
       </div>
+
+      {analysisId && visible && (
+        <div className="mt-3 flex items-center gap-2 border-t border-slate-100 pt-3">
+          <span className="text-xs text-slate-500">Rate this analysis:</span>
+          <button
+            type="button"
+            disabled={!!rated}
+            onClick={() => submitRating("good")}
+            className="rounded-md border border-green-200 bg-green-50 px-3 py-1 text-sm text-green-800 disabled:opacity-50"
+          >
+            {rated === "good" ? "Good ✓" : "👍 Good"}
+          </button>
+          <button
+            type="button"
+            disabled={!!rated}
+            onClick={() => submitRating("bad")}
+            className="rounded-md border border-red-200 bg-red-50 px-3 py-1 text-sm text-red-800 disabled:opacity-50"
+          >
+            {rated === "bad" ? "Bad ✓" : "👎 Bad"}
+          </button>
+        </div>
+      )}
 
       {showOrder && (
         <motion.div

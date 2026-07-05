@@ -364,7 +364,7 @@ export default function Home() {
                   {/* The conclusion is what the user came for — it leads. */}
                   {isComplete && (
                     <div className="mb-6">
-                      <VerdictCard visible={isComplete} verdict={analysis.verdict} />
+                      <VerdictCard visible={isComplete} verdict={analysis.verdict} analysisId={selectedId ?? undefined} />
                     </div>
                   )}
                   <PipelineOverview mes={analysis.tables.mes} failingLots={analysis.failingLots} />
