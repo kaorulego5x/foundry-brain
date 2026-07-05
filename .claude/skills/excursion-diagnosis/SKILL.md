@@ -8,6 +8,13 @@ allowed-tools:
   - Read
   - Grep
   - Glob
+  - mcp__gbrain__search
+  - mcp__gbrain__query
+  - mcp__gbrain__get_page
+  - mcp__gbrain__put_page
+  - mcp__gbrain__add_tag
+  - mcp__gbrain__add_timeline_entry
+  - mcp__gbrain__log_ingest
 triggers:
   - yield dropped
   - yield excursion
@@ -47,6 +54,16 @@ whole problem; you must stitch them by hand, every time.
 - **Etch RF power**: process center **2.10 kW**, warn band ±0.10, **hard alarm limit 2.40 kW**.
   A drift that stays under 2.40 kW fires **no alarm** — this is why the excursion
   slipped through automated monitoring.
+
+## Check brain memory first
+
+If `mcp__gbrain__search` is available, search for prior excursions before
+querying the CSVs: `mcp__gbrain__search("<symptom> <suspected step, e.g. etch RF drift>")`.
+If a hit looks relevant, `mcp__gbrain__get_page` its slug and read it. Cite the
+slug in your narration if it changes what you look for (e.g. "excursions/2026-07-04-etch3c
+shows Etch-3/C has drifted before — checking it first"). If the tool errors,
+isn't connected, or returns nothing useful, proceed straight to the playbook —
+this is a nice-to-have, not a dependency.
 
 ## Investigation playbook — run in order, show your work
 
@@ -93,9 +110,57 @@ into the history store so it appears in the UI's "Replay analysis" selector:
    `2026-07-05-<culprit>` (keep it unique — do not overwrite an existing record).
 3. Prepend a summary entry to `visualizer/public/analyses/index.json`:
    `{ "id", "timestamp", "query", "rootCause", "yieldDeltaPct" }`.
+4. Also write a human-readable Markdown report using the schema in
+   `templates/analysis-report.md` (four fixed sections: Problem, Methodology,
+   Output, Insight). Save it as `reports/<id>.md` with the same `<id>` as the
+   JSON record — see `reports/2026-07-04-etch3c.md` for a filled example.
 
 If the current run is just the canonical Etch-3/C scenario, the seed record
-already exists — skip writing and reuse it.
+already exists — skip 1-4 and reuse it, but still do the gbrain write-through
+below (idempotent: reuse the same `<id>`).
+
+## Store in gbrain (long-term vector memory)
+
+Steps 1-4 above persist to the repo for the *UI* to replay. This step persists
+to **gbrain** so the finding is semantically searchable across sessions and by
+sibling Foundry Brain skills (Hold-or-Ship, Drift Watch, Commonality) — this is
+what makes the brain accumulate memory instead of resetting every run.
+
+1. **Save the page** — call `mcp__gbrain__put_page` with:
+   - `slug`: `excursions/<id>` (same `<id>` as the JSON/Markdown records)
+   - `content`: the full Markdown report from `reports/<id>.md`, with YAML
+     frontmatter prepended:
+     ```yaml
+     ---
+     title: "Excursion: <equipment>/<chamber> — <one-line root cause>"
+     tags: [excursion-diagnosis, <culprit-slug, e.g. etch-3-c>, <hold|ship>]
+     ---
+     ```
+   - `source_kind`: `"excursion-diagnosis"`
+2. **Tag for correlation** — `mcp__gbrain__add_tag` on `excursions/<id>` with
+   the culprit equipment/chamber slug (e.g. `etch-3-c`), so every excursion
+   ever traced to that tool clusters under one tag.
+3. **Timeline entry** — `mcp__gbrain__add_timeline_entry` on `excursions/<id>`
+   with `date` = the alert date, `summary` = the one-line verdict, `detail` =
+   the evidence line (lots affected, RF peak vs. center), `source` =
+   `"excursion-diagnosis"`.
+4. **Log the ingestion** — `mcp__gbrain__log_ingest` with `source_type`:
+   `"excursion-diagnosis"`, `source_ref`: `<id>`, `pages_updated`:
+   `["excursions/<id>"]`, `summary`: the one-line verdict.
+5. **Equipment stub (first time only)** — `mcp__gbrain__search` for
+   `equipment/<culprit-slug>`. If no page exists, `mcp__gbrain__put_page` a
+   stub (`tags: [entity, equipment]`, one line: "Mentioned in
+   excursion-diagnosis run `<id>`. Replace with full tool profile when
+   relevant.") so future excursions on the same tool have somewhere to link.
+
+**Error handling**: any `mcp__gbrain__*` call failing (not connected,
+throttled, transient error) is non-fatal — the JSON/Markdown records already
+exist regardless, so nothing is lost. Note it in the completion summary below
+and move on; do not retry inline.
+
+**Completion summary** — end your investigation output with one line, e.g.:
+"Brain: read 1 prior excursion, saved 1 page (`excursions/<id>`), tagged
+`etch-3-c`, 0 throttles."
 
 ## Launch the live UI
 
