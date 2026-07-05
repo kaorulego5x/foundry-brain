@@ -879,6 +879,21 @@
       .s-statement .hl {
         color: var(--blue);
       }
+      .s-statement .rd {
+        color: var(--red);
+      }
+      .s-statement .statement-sub {
+        font-size: 34px;
+        color: var(--text2);
+        margin-top: 30px;
+        font-weight: 600;
+        max-width: 1000px;
+        line-height: 1.4;
+      }
+      .s-statement .statement-sub .rd {
+        color: var(--red);
+        font-weight: 800;
+      }
 
       /* ═══ Market outlook ═══ */
       .mkt {
@@ -997,36 +1012,13 @@
     <!-- 4 · Center pin statement -->
     <div class="slide s-statement">
       <h2>
-        The center pin of the factory OS is
-        <span class="hl">yield analysis.</span>
+        <span class="hl">Yield analysis</span> is the center pin of the
+        semiconductor factory OS &mdash; yet it still depends on a few
+        <span class="rd">slow, scarce artisans.</span>
       </h2>
     </div>
 
-    <!-- 4 · Hook — Rapidus -->
-    <div class="slide hook">
-      <div class="flag">🇯🇵 JAPAN'S BIG BET</div>
-      <h1>Rapidus</h1>
-      <p class="lead">
-        Japan's nation-backed foundry, racing to mass-produce
-        <b>2nm chips by 2027</b>.
-      </p>
-      <div class="stats">
-        <div class="stat">
-          <div class="v b">2027</div>
-          <div class="l">2nm mass-production</div>
-        </div>
-        <div class="stat">
-          <div class="v b">&yen;1T+</div>
-          <div class="l">public funding</div>
-        </div>
-        <div class="stat">
-          <div class="v b">6k&rarr;25k</div>
-          <div class="l">wafers / month</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- 3 · What is yield -->
+    <!-- What is yield -->
     <div class="slide">
       <h2>What is <span class="sub">"yield"?</span></h2>
       <div class="yield-wrap">
@@ -1057,7 +1049,31 @@
       </div>
     </div>
 
-    <!-- 4 · Problem — the yield KPI gap -->
+    <!-- Hook — Rapidus -->
+    <div class="slide hook">
+      <div class="flag">🇯🇵 JAPAN'S BIG BET</div>
+      <h1>Rapidus</h1>
+      <p class="lead">
+        Japan's nation-backed foundry, racing to mass-produce
+        <b>2nm chips by 2027</b>.
+      </p>
+      <div class="stats">
+        <div class="stat">
+          <div class="v b">2027</div>
+          <div class="l">2nm mass-production</div>
+        </div>
+        <div class="stat">
+          <div class="v b">&yen;1T+</div>
+          <div class="l">public funding</div>
+        </div>
+        <div class="stat">
+          <div class="v b">6k&rarr;25k</div>
+          <div class="l">wafers / month</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Problem — the yield KPI gap -->
     <div class="slide">
       <h2>Yield is the KPI. <span class="sub">2027 is the deadline.</span></h2>
       <div class="ba">
@@ -1108,10 +1124,11 @@
 
     <!-- 5 · Yield engineer — the job -->
     <div class="slide">
-      <h2>
-        The yield engineer
-        <span class="sub">analyzes the cause &amp; proposes the action.</span>
-      </h2>
+      <h2>What is <span class="sub">yield analysis?</span></h2>
+      <p class="intro-sub">
+        The yield engineer's job:
+        <b>analyze the cause, then propose the action.</b>
+      </p>
       <div class="pipe">
         <div class="pcard">
           <div class="ico">🔍</div>
@@ -1192,7 +1209,7 @@
 
     <!-- 7 · Features -->
     <div class="slide">
-      <h2>Features: <span class="sub">the AI runs the whole loop.</span></h2>
+      <h2>Features: <span class="sub">the AI runs the whole yield analysis.</span></h2>
       <div class="feeds">
         <div class="af-dbs">
           <div class="af-db">📡 Sensor Data</div>
