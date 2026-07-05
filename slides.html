@@ -159,6 +159,22 @@
   .mk-ft .vd{font-size:20px;color:var(--text2);margin-top:2px}
   .mk-ft button{background:var(--text);color:var(--white);border:none;padding:12px 24px;border-radius:8px;font-weight:700;font-size:20px;cursor:default}
 
+  /* ═══ Outlook · one brain, many skills ═══ */
+  .spine{display:flex;align-items:center;justify-content:center;gap:14px;margin-top:20px;font-size:19px;color:var(--text2);font-weight:600;flex-wrap:wrap}
+  .spine .pill{background:var(--card);border-radius:999px;padding:9px 18px}
+  .spine .x{color:var(--text3);font-weight:800}
+  .skills{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:28px}
+  .skill{background:var(--card);border-radius:16px;padding:26px 20px;position:relative;border:2px solid transparent}
+  .skill.live{border-color:var(--green);background:rgba(36,138,61,0.06)}
+  .skill .n{font-size:14px;font-weight:800;letter-spacing:0.6px;text-transform:uppercase;color:var(--text3)}
+  .skill.live .n{color:var(--green)}
+  .skill h3{font-size:24px;font-weight:800;margin-top:6px;line-height:1.15}
+  .skill p{font-size:17px;color:var(--text2);margin-top:6px;line-height:1.35}
+  .skill .badge{position:absolute;top:-12px;right:14px;font-size:12px;font-weight:800;padding:4px 12px;border-radius:999px;letter-spacing:0.5px}
+  .skill.live .badge{background:var(--green);color:#fff}
+  .skill.soon{opacity:0.55}
+  .skill.soon .badge{background:var(--border);color:var(--text2)}
+
   /* ═══ 10 · Close ═══ */
   .s-close{align-items:center;text-align:center;background:var(--text);color:var(--white)}
   .s-close .q{font-size:40px;font-weight:400;line-height:1.55;color:rgba(255,255,255,0.5);max-width:900px;margin-bottom:48px}
@@ -294,7 +310,7 @@
 <div class="slide">
   <div class="label">Solution</div>
   <h2>AI Yield Engineer</h2>
-  <p style="font-size:24px;color:var(--text2);margin-top:4px;margin-bottom:4px">AI agent that replicates expert investigation &mdash; minutes, not hours.</p>
+  <p style="font-size:24px;color:var(--text2);margin-top:4px;margin-bottom:4px">The fab&apos;s brain &mdash; and its first skill: diagnose a yield drop like an expert, in minutes, not hours.</p>
   <div class="ba">
     <div class="ba-side before">
       <h3>Today</h3>
@@ -381,6 +397,7 @@
 <div class="slide">
   <div class="label">Live Demo</div>
   <h2>Watch the agent investigate</h2>
+  <p style="font-size:22px;color:var(--text2);margin-top:2px;margin-bottom:2px">The <b>Excursion Diagnosis</b> skill queries all three systems, then launches this view.</p>
   <div class="mk">
     <div class="mk-bar"><i></i><i></i><i></i><span>Foundry Brain</span></div>
     <div class="mk-body">
@@ -413,7 +430,46 @@
   </div>
 </div>
 
-<!-- 10 · Close -->
+<!-- 10 · Outlook — one brain, many skills -->
+<div class="slide">
+  <div class="label">Where This Goes</div>
+  <h2>One brain. <span class="sub">The data compounds.</span></h2>
+  <p style="font-size:23px;color:var(--text2);margin-top:6px;line-height:1.4">Every excursion Foundry Brain solves becomes fab memory. The same data spine can carry more skills over time &mdash; we ship the first one today.</p>
+  <div class="spine">
+    <span class="pill">📡 Machine Sensors</span><span class="x">&times;</span>
+    <span class="pill">🏭 Production History</span><span class="x">&times;</span>
+    <span class="pill">🔬 Quality Inspection</span>
+    <span class="x">+</span><span class="pill">🧠 accumulated memory</span>
+  </div>
+  <div class="skills">
+    <div class="skill live">
+      <div class="badge">LIVE</div>
+      <div class="n">Skill 1</div>
+      <h3>Excursion Diagnosis</h3>
+      <p>Yield dropped &mdash; find the root-cause machine, with evidence.</p>
+    </div>
+    <div class="skill soon">
+      <div class="badge">LATER</div>
+      <div class="n">Skill 2</div>
+      <h3>Hold&nbsp;or&nbsp;Ship</h3>
+      <p>Affected WIP &mdash; hold or ship, risk-scored.</p>
+    </div>
+    <div class="skill soon">
+      <div class="badge">LATER</div>
+      <div class="n">Skill 3</div>
+      <h3>Drift Watch</h3>
+      <p>Catch in-spec drift before it becomes an excursion.</p>
+    </div>
+    <div class="skill soon">
+      <div class="badge">LATER</div>
+      <div class="n">Skill 4</div>
+      <h3>Commonality</h3>
+      <p>Bad lots &mdash; what do they share across every system?</p>
+    </div>
+  </div>
+</div>
+
+<!-- 11 · Close -->
 <div class="slide s-close">
   <div class="q">Three reasons this can't be done &mdash;<br>secrecy, complexity, expert knowledge.<br><br>Those three are exactly why<br><strong>this is a massive business.</strong></div>
   <h1>Foundry Brain</h1>
@@ -421,7 +477,7 @@
 </div>
 
 <div class="nav" id="nav"></div>
-<div class="sn" id="sn">1 / 10</div>
+<div class="sn" id="sn">1 / 11</div>
 <script>
 const ss=document.querySelectorAll('.slide'),nav=document.getElementById('nav'),sn=document.getElementById('sn');let c=0;
 ss.forEach((_,i)=>{const d=document.createElement('button');d.className='nav-dot'+(i===0?' active':'');d.onclick=()=>go(i);nav.appendChild(d)});
