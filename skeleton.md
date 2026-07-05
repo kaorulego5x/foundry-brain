@@ -26,7 +26,7 @@ Garry Tan の [gstack](https://github.com/garrytan/gstack) が「1つの Claude 
 | `.claude/skills/<skill>` ×54 | gstack 各スキルへの**シンボリックリンク**（`→ gstack/<skill>`）。Claude Code の発見対象は `.claude/skills/*/SKILL.md` の1階層なので、gstack 公式 `setup` と同じくフラットに並べて呼べるようにしている |
 | `.claude/skills/excursion-diagnosis/` | **スキル#1**（今の故障分析）。`SKILL.md` + `data/`（3系統のモックCSV）。上記と並列 |
 
-**スキル#1「Excursion Diagnosis」の挙動**: `SKILL.md` の調査手順に従って `data/` の3系統CSVを実際に query → 不良ロット特定 → 装置ルート追跡 → センサードリフト検出 → 原因確定＋Hold推奨、を段階的に実行。**その上で `demo/`（可視化UI）を起動**し、同じ調査をブラウザで再生する。「スキルが調査しつつデモを起動する」構成。
+**スキル#1「Excursion Diagnosis」の挙動**: `SKILL.md` の調査手順に従って `data/` の3系統CSVを実際に query → 不良ロット特定 → 装置ルート追跡 → センサードリフト検出 → 原因確定＋Hold推奨、を段階的に実行。**その上で `visualizer/`（可視化UI）を起動**し、同じ調査をブラウザで再生する。「スキルが調査しつつ可視化UIを起動する」構成。
 
 - **ハッカソンで前面に出すのはスキル#1のみ**。他スキル（Hold-or-Ship / Drift Watch / Commonality）は強く売り込まず、「データが溜まるのでこういう使い方もできる」という**軽い展望**として最後に触れるだけ（スコープを広げない）
 

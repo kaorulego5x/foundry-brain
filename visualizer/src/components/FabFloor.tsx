@@ -1,55 +1,49 @@
 "use client";
 
 import { motion } from "framer-motion";
+import type { FabFloorData } from "@/lib/analysis";
 
 interface Props {
   // "idle" | "flows" (draw lot→chamber paths) | "verdict" (culprit locked red)
   mode: "idle" | "flows" | "verdict";
+  data: FabFloorData;
 }
 
-type Lot = { id: string; bad: boolean; chamber: string };
-
-const LOTS: Lot[] = [
-  { id: "LOT-0701", bad: false, chamber: "E1A" },
-  { id: "LOT-0702", bad: false, chamber: "E1B" },
-  { id: "LOT-0703", bad: true, chamber: "E3C" },
-  { id: "LOT-0704", bad: true, chamber: "E3C" },
-  { id: "LOT-0705", bad: false, chamber: "E2A" },
-  { id: "LOT-0706", bad: false, chamber: "E2B" },
-  { id: "LOT-0707", bad: true, chamber: "E3C" },
-  { id: "LOT-0708", bad: true, chamber: "E3C" },
-  { id: "LOT-0709", bad: false, chamber: "E3A" },
-  { id: "LOT-0710", bad: false, chamber: "E3B" },
-  { id: "LOT-0711", bad: true, chamber: "E3C" },
-];
-
-const CHAMBERS: Record<string, { label: string; x: number; y: number }> = {
-  E1A: { label: "Etch-1 · A", x: 560, y: 62 },
-  E1B: { label: "Etch-1 · B", x: 560, y: 98 },
-  E2A: { label: "Etch-2 · A", x: 560, y: 182 },
-  E2B: { label: "Etch-2 · B", x: 560, y: 218 },
-  E3A: { label: "Etch-3 · A", x: 560, y: 302 },
-  E3B: { label: "Etch-3 · B", x: 560, y: 338 },
-  E3C: { label: "Etch-3 · C", x: 560, y: 400 },
-};
-
-const TOOLS = [
-  { name: "Etch-1", y: 40, h: 92 },
-  { name: "Etch-2", y: 160, h: 92 },
-  { name: "Etch-3", y: 280, h: 156 },
-];
-
+const CH_X = 560;
 const CH_W = 128;
 const CH_H = 26;
+const ROW_H = 37;
+const TOOL_GAP = 24;
 
-export default function FabFloor({ mode }: Props) {
+export default function FabFloor({ mode, data }: Props) {
   const showFlows = mode === "flows" || mode === "verdict";
   const verdict = mode === "verdict";
 
-  const lotY = (i: number) => 40 + i * 37;
+  const { tools, chambers, lots, culpritKey } = data;
+  const label = Object.fromEntries(chambers.map((c) => [c.key, c.label]));
+
+  // Data-driven vertical layout: stack tool boxes, place chambers within.
+  const chamberY: Record<string, number> = {};
+  const toolBoxes: { name: string; y: number; h: number }[] = [];
+  let cy = 52;
+  for (const tool of tools) {
+    const boxTop = cy - CH_H / 2 - 14;
+    for (const key of tool.chambers) {
+      chamberY[key] = cy;
+      cy += ROW_H;
+    }
+    const boxBottom = cy - ROW_H + CH_H / 2 + 6;
+    toolBoxes.push({ name: tool.name, y: boxTop, h: boxBottom - boxTop });
+    cy += TOOL_GAP;
+  }
+
+  const lotY = (i: number) => 40 + i * ROW_H;
+  const rightH = cy + 10;
+  const leftH = lotY(lots.length - 1) + 30;
+  const vbH = Math.max(rightH, leftH, 240);
 
   return (
-    <svg viewBox="0 0 720 470" className="w-full h-full">
+    <svg viewBox={`0 0 720 ${vbH}`} className="w-full h-full">
       {/* section labels */}
       <text x="40" y="24" className="fill-slate-400" fontSize="12" fontWeight="600">
         WAFER LOTS
@@ -59,24 +53,10 @@ export default function FabFloor({ mode }: Props) {
       </text>
 
       {/* tool grouping boxes */}
-      {TOOLS.map((t) => (
+      {toolBoxes.map((t) => (
         <g key={t.name}>
-          <rect
-            x={470}
-            y={t.y}
-            width={CH_W + 20 + 470 - 470}
-            height={t.h}
-            rx={12}
-            fill="#f8fafc"
-            stroke="#e2e8f0"
-          />
-          <text
-            x={478}
-            y={t.y + 16}
-            className="fill-slate-400"
-            fontSize="10"
-            fontWeight="700"
-          >
+          <rect x={470} y={t.y} width={CH_W + 20} height={t.h} rx={12} fill="#f8fafc" stroke="#e2e8f0" />
+          <text x={478} y={t.y + 16} className="fill-slate-400" fontSize="10" fontWeight="700">
             {t.name}
           </text>
         </g>
@@ -84,37 +64,35 @@ export default function FabFloor({ mode }: Props) {
 
       {/* flow paths */}
       {showFlows &&
-        LOTS.map((lot, i) => {
-          const ch = CHAMBERS[lot.chamber];
+        lots.map((lot, i) => {
+          const chY = chamberY[lot.chamberKey];
           const y0 = lotY(i);
-          const d = `M150,${y0} C 330,${y0} 360,${ch.y} ${560},${ch.y}`;
-          const isCulprit = lot.chamber === "E3C";
+          const d = `M150,${y0} C 330,${y0} 360,${chY} ${CH_X},${chY}`;
           return (
             <motion.path
               key={lot.id}
               d={d}
               fill="none"
-              stroke={
-                lot.bad ? (verdict ? "#dc2626" : "#f87171") : "#cbd5e1"
-              }
+              stroke={lot.bad ? (verdict ? "#dc2626" : "#f87171") : "#cbd5e1"}
               strokeWidth={lot.bad ? 2.4 : 1.4}
               strokeLinecap="round"
               initial={{ pathLength: 0, opacity: 0 }}
-              animate={{ pathLength: 1, opacity: isCulprit || !lot.bad ? 1 : 1 }}
+              animate={{ pathLength: 1, opacity: 1 }}
               transition={{ duration: 0.9, delay: 0.1 + i * 0.08 }}
             />
           );
         })}
 
       {/* chamber nodes */}
-      {Object.entries(CHAMBERS).map(([key, c]) => {
-        const isCulprit = key === "E3C";
+      {chambers.map((c) => {
+        const isCulprit = c.key === culpritKey;
         const hot = verdict && isCulprit;
+        const y = chamberY[c.key];
         return (
-          <g key={key}>
+          <g key={c.key}>
             <motion.rect
-              x={c.x}
-              y={c.y - CH_H / 2}
+              x={CH_X}
+              y={y - CH_H / 2}
               width={CH_W}
               height={CH_H}
               rx={7}
@@ -125,19 +103,19 @@ export default function FabFloor({ mode }: Props) {
               strokeWidth={hot ? 2.5 : 1.5}
             />
             <text
-              x={c.x + 10}
-              y={c.y + 4}
+              x={CH_X + 10}
+              y={y + 4}
               fontSize="11"
               fontWeight={hot ? 700 : 500}
               className={hot ? "fill-red-700" : "fill-slate-600"}
               fontFamily="ui-monospace, monospace"
             >
-              {c.label}
+              {label[c.key] ?? c.key}
             </text>
             {hot && (
               <motion.circle
-                cx={c.x + CH_W - 12}
-                cy={c.y}
+                cx={CH_X + CH_W - 12}
+                cy={y}
                 r={4}
                 fill="#dc2626"
                 initial={{ opacity: 0.4 }}
@@ -150,7 +128,7 @@ export default function FabFloor({ mode }: Props) {
       })}
 
       {/* lot chips */}
-      {LOTS.map((lot, i) => {
+      {lots.map((lot, i) => {
         const y = lotY(i);
         return (
           <g key={lot.id}>

@@ -79,21 +79,40 @@ AFFECTED   : <lot ids>
 RECOMMEND  : HOLD affected lots — do not ship pending re-measure
 ```
 
+## Persist the analysis (so it can be replayed later)
+
+The visualizer UI replays **saved analysis records**. After concluding, write this run
+into the history store so it appears in the UI's "Replay analysis" selector:
+
+1. Build a record matching the `Analysis` schema in
+   `visualizer/src/lib/analysis.ts`. Use the existing
+   `visualizer/public/analyses/2026-07-04-etch3c.json` as a template and fill it with
+   THIS run's findings (tables you queried, failing lots, steps, fab-floor
+   routing, RF series, suspects, verdict).
+2. Save it as `visualizer/public/analyses/<id>.json` where `<id>` is a slug like
+   `2026-07-05-<culprit>` (keep it unique — do not overwrite an existing record).
+3. Prepend a summary entry to `visualizer/public/analyses/index.json`:
+   `{ "id", "timestamp", "query", "rootCause", "yieldDeltaPct" }`.
+
+If the current run is just the canonical Etch-3/C scenario, the seed record
+already exists — skip writing and reuse it.
+
 ## Launch the live UI
 
-After (or while) investigating, start the Foundry Brain visualization so the
-operator can watch the same steps replay:
+Start the Foundry Brain visualization so the operator can watch the same steps
+replay:
 
 ```bash
-cd demo && (npm run dev >/tmp/foundry-brain-demo.log 2>&1 &) && sleep 3 && echo "→ open http://localhost:3000"
+cd visualizer && (npm run dev >/tmp/foundry-brain-visualizer.log 2>&1 &) && sleep 3 && echo "→ open http://localhost:3000"
 ```
 
-- If dependencies are missing, run `npm install` in `demo/` first.
-- `demo/AGENTS.md` notes this is a modified Next.js — do not edit demo source as
-  part of this skill; only run it.
-- Tell the user to open **http://localhost:3000** and press **Start investigation**;
-  the UI walks the same four steps (Inspection → Production History → Sensors →
-  Correlation → Verdict) you just reasoned through.
+- If dependencies are missing, run `npm install` in `visualizer/` first.
+- `visualizer/AGENTS.md` notes this is a modified Next.js — do not edit visualizer source as
+  part of this skill; only run it and write JSON records under `visualizer/public/`.
+- Tell the user to open **http://localhost:3000**, pick this run from the
+  **Replay analysis** selector, and press **Replay investigation**; the UI walks
+  the same four steps (Inspection → Production History → Sensors → Correlation →
+  Verdict) you just reasoned through.
 
 ## Notes
 
