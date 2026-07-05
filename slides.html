@@ -1,489 +1,1404 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Foundry Brain</title>
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
-  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-  :root{--white:#fff;--card:#f2f2f7;--border:#d1d1d6;--text:#000;--text2:#3a3a3c;--text3:#8e8e93;--blue:#0066cc;--red:#d70015;--green:#248a3d;--amber:#b25000}
-  html,body{height:100%;font-family:'Inter',system-ui,sans-serif;background:var(--white);color:var(--text);overflow:hidden;-webkit-font-smoothing:antialiased}
-  .slide{position:absolute;inset:0;display:none;flex-direction:column;justify-content:center;padding:36px 64px;opacity:0;transition:opacity 0.3s}
-  .slide.active{display:flex;opacity:1}
-  .nav{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);display:flex;gap:8px;z-index:10}
-  .nav-dot{width:8px;height:8px;border-radius:50%;background:var(--border);border:none;cursor:pointer;padding:0;transition:background 0.2s}
-  .nav-dot.active{background:var(--text)}
-  .sn{position:fixed;bottom:16px;right:40px;font-size:14px;color:var(--text3);z-index:10;font-weight:500}
-  .label{font-size:24px;font-weight:600;color:var(--blue);margin-bottom:4px}
-  h2{font-size:64px;font-weight:800;letter-spacing:-2.5px;line-height:1.08}
-  h2 .sub{color:var(--text3)}
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Foundry Brain</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap");
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      :root {
+        --white: #fff;
+        --card: #f2f2f7;
+        --border: #d1d1d6;
+        --text: #000;
+        --text2: #3a3a3c;
+        --text3: #8e8e93;
+        --blue: #0066cc;
+        --red: #d70015;
+        --green: #248a3d;
+        --amber: #b25000;
+      }
+      html,
+      body {
+        height: 100%;
+        font-family: "Inter", system-ui, sans-serif;
+        background: var(--white);
+        color: var(--text);
+        overflow: hidden;
+        -webkit-font-smoothing: antialiased;
+      }
+      .slide {
+        position: absolute;
+        inset: 0;
+        display: none;
+        flex-direction: column;
+        justify-content: center;
+        padding: 48px 72px;
+        opacity: 0;
+        transition: opacity 0.3s;
+      }
+      .slide.active {
+        display: flex;
+        opacity: 1;
+      }
+      .nav {
+        position: fixed;
+        bottom: 16px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        gap: 8px;
+        z-index: 10;
+      }
+      .nav-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--border);
+        border: none;
+        cursor: pointer;
+        padding: 0;
+        transition: background 0.2s;
+      }
+      .nav-dot.active {
+        background: var(--text);
+      }
+      .sn {
+        position: fixed;
+        bottom: 16px;
+        right: 40px;
+        font-size: 14px;
+        color: var(--text3);
+        z-index: 10;
+        font-weight: 500;
+      }
+      .label {
+        font-size: 24px;
+        font-weight: 600;
+        color: var(--blue);
+        margin-bottom: 8px;
+      }
+      h2 {
+        font-size: 64px;
+        font-weight: 800;
+        letter-spacing: -2.5px;
+        line-height: 1.08;
+      }
+      h2 .sub {
+        color: var(--text);
+      }
+      .lead {
+        font-size: 26px;
+        color: var(--text2);
+        margin-top: 16px;
+        line-height: 1.45;
+        max-width: 1050px;
+      }
+      .lead b {
+        color: var(--text);
+        font-weight: 700;
+      }
 
-  /* ═══ 1 · Title ═══ */
-  .s-title{align-items:center;text-align:center;background:var(--text);color:var(--white)}
-  .s-title h1{font-size:120px;font-weight:900;letter-spacing:-5px}
-  .s-title .tag{font-size:36px;font-weight:400;color:rgba(255,255,255,0.5);margin-top:8px}
-  .s-title .tag em{font-style:normal;color:rgba(255,255,255,0.85);font-weight:600}
-  .s-title .meta{font-size:18px;color:rgba(255,255,255,0.3);margin-top:48px}
+      /* ═══ Title / Close ═══ */
+      .s-title,
+      .s-close {
+        align-items: center;
+        text-align: center;
+        background: var(--text);
+        color: var(--white);
+      }
+      .s-title h1,
+      .s-close h1 {
+        font-size: 120px;
+        font-weight: 900;
+        letter-spacing: -5px;
+      }
+      .s-title .tag {
+        font-size: 36px;
+        font-weight: 400;
+        color: #fff;
+        margin-top: 8px;
+        line-height: 1.3;
+      }
+      .s-title .tag em {
+        font-style: normal;
+        color: rgba(255, 255, 255, 0.85);
+        font-weight: 600;
+      }
+      .s-title .meta,
+      .s-close .meta {
+        font-size: 18px;
+        color: rgba(255, 255, 255, 0.3);
+        margin-top: 48px;
+      }
+      .s-close .q {
+        font-size: 40px;
+        font-weight: 400;
+        line-height: 1.55;
+        color: rgba(255, 255, 255, 0.5);
+        max-width: 900px;
+        margin-bottom: 48px;
+      }
+      .s-close .q strong {
+        color: #fff;
+        font-weight: 700;
+      }
+      .s-close h1 {
+        font-size: 100px;
+        letter-spacing: -4px;
+      }
+      .s-close .meta {
+        margin-top: 12px;
+      }
 
-  /* ═══ 2 · Problem — visual story ═══ */
-  .story{display:flex;align-items:center;gap:0;margin-top:28px;width:100%}
-  .story-step{flex:1;text-align:center;padding:28px 16px;position:relative}
-  .story-step .ico{font-size:64px;margin-bottom:8px}
-  .story-step h3{font-size:28px;font-weight:700}
-  .story-step p{font-size:22px;color:var(--text2);margin-top:4px}
-  .story-step p strong{color:var(--red);font-weight:800}
-  .story-arr{font-size:40px;color:var(--text3);flex-shrink:0}
-  .story-step.red-bg{background:rgba(215,0,21,0.06);border-radius:16px}
-  /* time / nature tag under each step */
-  .story-step .tag{margin-top:12px;display:inline-block;font-size:15px;font-weight:700;padding:4px 12px;border-radius:999px}
-  .tag.auto{background:rgba(36,138,61,0.12);color:var(--green)}
-  .tag.slow{background:var(--amber);color:#fff}
-  .tag.cost{background:rgba(215,0,21,0.10);color:var(--red)}
-  /* the chokepoint step */
-  .story-step.choke{background:rgba(178,80,0,0.10);border:2.5px solid var(--amber);border-radius:16px;transform:scale(1.06);box-shadow:0 8px 28px rgba(178,80,0,0.18);z-index:2}
-  .choke-badge{position:absolute;top:-15px;left:50%;transform:translateX(-50%);background:var(--amber);color:#fff;font-size:13px;font-weight:800;padding:5px 14px;border-radius:999px;white-space:nowrap;letter-spacing:0.6px}
-  /* funnel marks: things pile UP going in, trickle OUT */
-  .story-arr.jam{color:var(--amber);font-weight:900}
+      /* ═══ Hook — Rapidus ═══ */
+      .hook h1 {
+        font-size: 104px;
+        font-weight: 900;
+        letter-spacing: -4px;
+        line-height: 1;
+      }
+      .hook .flag {
+        font-size: 24px;
+        font-weight: 700;
+        color: var(--red);
+        letter-spacing: 1px;
+      }
+      .stats {
+        display: flex;
+        gap: 14px;
+        margin-top: 36px;
+        flex-wrap: wrap;
+      }
+      .stat {
+        background: var(--card);
+        border-radius: 16px;
+        padding: 22px 30px;
+      }
+      .stat .v {
+        font-size: 44px;
+        font-weight: 800;
+        letter-spacing: -1.5px;
+      }
+      .stat .v.b {
+        color: var(--blue);
+      }
+      .stat .l {
+        font-size: 19px;
+        color: var(--text2);
+        margin-top: 2px;
+      }
 
-  /* ═══ 3 · Data — diagram ═══ */
-  .data-diagram{display:flex;align-items:center;justify-content:center;gap:0;margin-top:20px;width:100%}
-  .db-col{display:flex;flex-direction:column;gap:10px}
-  .db-box{background:var(--card);border-radius:14px;padding:20px 28px;text-align:center;min-width:220px}
-  .db-box .ico{font-size:44px}
-  .db-box h3{font-size:28px;font-weight:800;margin-top:4px}
-  .db-box p{font-size:20px;color:var(--text2);margin-top:2px}
-  .db-center{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 32px;position:relative}
-  .db-center .big-x{font-size:120px;font-weight:900;color:var(--red);line-height:1}
-  .db-center p{font-size:22px;color:var(--red);font-weight:700;text-align:center;margin-top:4px}
-  .db-lines{display:flex;flex-direction:column;align-items:center;gap:8px;padding:0 12px}
-  .db-line{width:80px;height:3px;background:var(--border);position:relative}
-  /* data cards with sample values */
-  .dgrid{display:flex;gap:18px;width:100%;margin-top:18px}
-  .dcard{flex:1;background:var(--card);border-radius:18px;padding:22px;display:flex;flex-direction:column}
-  .dcard .ico{font-size:38px;line-height:1}
-  .dcard .angle{font-size:13px;font-weight:800;letter-spacing:0.6px;text-transform:uppercase;color:var(--blue);margin-top:8px}
-  .dcard h3{font-size:25px;font-weight:800;margin-top:2px}
-  .dcard .sub{font-size:16px;color:var(--text2);margin-top:4px;line-height:1.35;min-height:44px}
-  .dcard .sample{margin-top:14px;background:var(--white);border:1px solid var(--border);border-radius:10px;padding:10px 12px;font-family:ui-monospace,'SF Mono',monospace;font-size:14px;color:var(--text2)}
-  .dcard .sample .r{display:flex;justify-content:space-between;gap:10px;padding:3px 0;white-space:nowrap}
-  .dcard .sample .r.bad{color:var(--red);font-weight:700}
-  .dcard .sample .r.ok{color:var(--green)}
-  .dcard .key{margin-top:14px;font-size:14px;color:var(--text3)}
-  .dcard .key b{color:var(--blue);font-weight:700}
-  .mismatch{margin-top:20px;display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;background:rgba(215,0,21,0.06);border-radius:14px;padding:16px 22px}
-  .mismatch .pill{font-family:ui-monospace,monospace;font-size:15px;font-weight:700;background:var(--white);border:1px solid var(--border);border-radius:8px;padding:6px 12px}
-  .mismatch .neq{font-size:22px;color:var(--red);font-weight:800}
-  .mismatch .concl{font-size:18px;color:var(--text2);font-weight:600}
+      /* ═══ Gap — two panels ═══ */
+      .ba {
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
+        gap: 0;
+        margin-top: 28px;
+        align-items: stretch;
+      }
+      .ba-side {
+        border-radius: 18px;
+        padding: 36px 32px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+      .ba-side.after {
+        background: rgba(36, 138, 61, 0.06);
+      }
+      .ba-side.before {
+        background: rgba(215, 0, 21, 0.05);
+      }
+      .ba-side .k {
+        font-size: 20px;
+        font-weight: 800;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+      }
+      .ba-side.after .k {
+        color: var(--green);
+      }
+      .ba-side.before .k {
+        color: var(--red);
+      }
+      .ba-side h3 {
+        font-size: 40px;
+        font-weight: 800;
+        letter-spacing: -1px;
+        margin-top: 8px;
+        line-height: 1.1;
+      }
+      .ba-side p {
+        font-size: 22px;
+        color: var(--text2);
+        margin-top: 12px;
+        line-height: 1.4;
+      }
+      .ba-arrow {
+        font-size: 56px;
+        color: var(--text3);
+        display: flex;
+        align-items: center;
+        padding: 0 24px;
+      }
 
-  /* ═══ 4 · Why Unsolved — icon cards ═══ */
-  .moats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:24px}
-  .moat{background:var(--card);border-radius:16px;padding:32px 24px;text-align:center}
-  .moat .ico{font-size:64px;margin-bottom:8px}
-  .moat h3{font-size:28px;font-weight:800;margin-bottom:6px}
-  .moat p{font-size:22px;color:var(--text2);line-height:1.35}
+      /* ═══ Yield explainer ═══ */
+      .yield-wrap {
+        display: flex;
+        align-items: center;
+        gap: 64px;
+        margin-top: 32px;
+      }
+      .wafer {
+        width: 300px;
+        height: 300px;
+        border-radius: 50%;
+        background: #e5e5ea;
+        padding: 16px;
+        display: grid;
+        grid-template-columns: repeat(8, 1fr);
+        grid-template-rows: repeat(8, 1fr);
+        gap: 5px;
+        flex-shrink: 0;
+        overflow: hidden;
+        border: 4px solid var(--border);
+      }
+      .wafer i {
+        border-radius: 3px;
+        background: var(--green);
+      }
+      .wafer i.bad {
+        background: var(--red);
+      }
+      .yield-def {
+        flex: 1;
+      }
+      .frac-eq {
+        display: flex;
+        align-items: center;
+        gap: 22px;
+      }
+      .frac {
+        display: inline-flex;
+        flex-direction: column;
+        text-align: center;
+        font-size: 32px;
+        font-weight: 800;
+      }
+      .frac .num {
+        color: var(--green);
+        padding: 0 12px 12px;
+      }
+      .frac .den {
+        border-top: 3px solid var(--text);
+        padding: 12px 12px 0;
+      }
+      .frac-eq .eq {
+        font-size: 46px;
+        font-weight: 800;
+        color: var(--text3);
+      }
+      .frac-eq .res {
+        font-size: 46px;
+        font-weight: 900;
+        letter-spacing: -1px;
+      }
+      .yield-def .eg {
+        font-size: 26px;
+        color: var(--text2);
+        margin-top: 30px;
+        line-height: 1.4;
+      }
+      .yield-def .eg b {
+        color: var(--text);
+        font-weight: 800;
+      }
+      .yield-def .eg .rd {
+        color: var(--red);
+        font-weight: 800;
+      }
 
-  /* ═══ 5 · Solution — before/after ═══ */
-  .ba{display:grid;grid-template-columns:1fr auto 1fr;gap:0;margin-top:20px;align-items:center}
-  .ba-side{border-radius:16px;padding:32px 28px}
-  .ba-side.before{background:rgba(215,0,21,0.05)}
-  .ba-side.after{background:rgba(36,138,61,0.05)}
-  .ba-side h3{font-size:28px;font-weight:800;margin-bottom:16px}
-  .ba-side.before h3{color:var(--red)}
-  .ba-side.after h3{color:var(--green)}
-  .ba-row{display:flex;align-items:center;gap:12px;margin-bottom:10px;font-size:24px}
-  .ba-row .ico{font-size:36px;flex-shrink:0}
-  .ba-row span{color:var(--text2)}
-  .ba-arrow{font-size:56px;color:var(--text3);text-align:center;padding:0 20px}
+      .stall {
+        margin-top: 30px;
+        font-size: 28px;
+        font-weight: 700;
+        color: var(--text2);
+        text-align: center;
+      }
+      .stall b {
+        color: var(--text);
+        font-weight: 800;
+      }
+      .stall b.rd {
+        color: var(--red);
+        font-weight: 800;
+      }
+      .stall b.gr {
+        color: var(--green);
+        font-weight: 800;
+      }
 
-  /* ═══ 6 · How — agent flow diagram ═══ */
-  .agent-flow{display:flex;align-items:stretch;gap:0;margin-top:20px;width:100%}
-  .af-step{flex:1;text-align:center;padding:28px 12px;border-radius:14px;background:var(--card);position:relative}
-  .af-step.hl{background:var(--blue);color:var(--white)}
-  .af-step .ico{font-size:48px;margin-bottom:4px}
-  .af-step h3{font-size:26px;font-weight:700}
-  .af-step p{font-size:20px;color:var(--text2);margin-top:2px}
-  .af-step.hl p{color:rgba(255,255,255,0.7)}
-  .af-arr{display:flex;align-items:center;font-size:32px;color:var(--text3);padding:0 4px;flex-shrink:0}
-  .af-dbs{display:flex;justify-content:center;gap:24px;margin-top:12px}
-  .af-db{background:var(--card);border-radius:10px;padding:12px 24px;font-size:20px;font-weight:600;color:var(--text2)}
+      /* ═══ Video embed ═══ */
+      .video-wrap {
+        margin-top: 24px;
+        width: 100%;
+        max-width: 980px;
+        align-self: center;
+        aspect-ratio: 16 / 9;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.12);
+        border: 1px solid var(--border);
+      }
+      .video-wrap iframe {
+        width: 100%;
+        height: 100%;
+        border: 0;
+        display: block;
+      }
 
-  /* ═══ 7 · Market — big numbers ═══ */
-  .mkt{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:20px}
-  .mkt-bars{display:flex;flex-direction:column;gap:10px}
-  .mkt-bar{background:var(--card);border-radius:14px;padding:20px 24px}
-  .mkt-bar .v{font-size:52px;font-weight:800;letter-spacing:-2px}
-  .mkt-bar .v.b{color:var(--blue)}
-  .mkt-bar .v.g{color:var(--green)}
-  .mkt-bar .v.a{color:var(--amber)}
-  .mkt-bar .l{font-size:22px;color:var(--text2);margin-top:2px}
-  .mkt-tgts{display:flex;flex-direction:column;gap:10px;justify-content:center}
-  .mkt-t{border-left:4px solid var(--blue);padding:4px 0 4px 20px}
-  .mkt-t h4{font-size:26px;font-weight:700}
-  .mkt-t p{font-size:20px;color:var(--text2)}
+      /* ═══ Pipeline — 3 plain-language cards ═══ */
+      .pipe {
+        display: flex;
+        gap: 18px;
+        margin-top: 28px;
+        align-items: stretch;
+      }
+      .pcard {
+        flex: 1;
+        background: var(--card);
+        border-radius: 20px;
+        padding: 30px 26px;
+        display: flex;
+        flex-direction: column;
+      }
+      .pcard .num {
+        font-size: 16px;
+        font-weight: 800;
+        color: var(--text3);
+        letter-spacing: 1px;
+      }
+      .pcard .ico {
+        font-size: 56px;
+        margin-top: 6px;
+        line-height: 1;
+      }
+      .pcard h3 {
+        font-size: 34px;
+        font-weight: 800;
+        letter-spacing: -1px;
+        margin-top: 10px;
+      }
+      .pcard p {
+        font-size: 21px;
+        color: var(--text2);
+        margin-top: 8px;
+        line-height: 1.4;
+        flex: 1;
+      }
+      .pcard .jarg {
+        margin-top: 16px;
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--blue);
+        background: var(--white);
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        padding: 6px 14px;
+        align-self: flex-start;
+      }
 
-  /* ═══ 8 · Competition — table ═══ */
-  .tb{width:100%;margin-top:20px;border-collapse:separate;border-spacing:0;border-radius:14px;overflow:hidden;border:1px solid var(--border)}
-  .tb th,.tb td{padding:18px 28px;text-align:left;font-size:24px;border-bottom:1px solid var(--border)}
-  .tb th{background:var(--card);color:var(--text2);font-weight:600;font-size:20px}
-  .tb td{color:var(--text2)}
-  .tb tr:last-child td{border-bottom:none}
-  .tb .us td{color:var(--text);font-weight:700;background:rgba(0,102,204,0.04)}
-  .tb .ck{color:var(--green);font-weight:700;font-size:28px}
-  .tb .cx{color:var(--text3)}
+      /* ═══ 3 data cards ═══ */
+      .dgrid {
+        display: flex;
+        gap: 18px;
+        width: 100%;
+        margin-top: 24px;
+      }
+      .dcard {
+        flex: 1;
+        background: var(--card);
+        border-radius: 18px;
+        padding: 24px;
+        display: flex;
+        flex-direction: column;
+      }
+      .dcard .ico {
+        font-size: 40px;
+        line-height: 1;
+      }
+      .dcard .angle {
+        font-size: 14px;
+        font-weight: 800;
+        letter-spacing: 0.6px;
+        text-transform: uppercase;
+        color: var(--blue);
+        margin-top: 10px;
+      }
+      .dcard h3 {
+        font-size: 27px;
+        font-weight: 800;
+        margin-top: 2px;
+      }
+      .dcard .subt {
+        font-size: 18px;
+        color: var(--text2);
+        margin-top: 6px;
+        line-height: 1.35;
+      }
 
-  /* ═══ 9 · Demo ═══ */
-  .mk{width:100%;border-radius:14px;overflow:hidden;margin-top:16px;border:1px solid var(--border);box-shadow:0 1px 12px rgba(0,0,0,0.06)}
-  .mk-bar{display:flex;align-items:center;gap:7px;padding:10px 18px;background:var(--card);border-bottom:1px solid var(--border)}
-  .mk-bar i{width:12px;height:12px;border-radius:50%;display:block}
-  .mk-bar i:nth-child(1){background:#ff5f57}
-  .mk-bar i:nth-child(2){background:#febc2e}
-  .mk-bar i:nth-child(3){background:#28c840}
-  .mk-bar span{margin-left:10px;font-size:18px;color:var(--text2);font-weight:600}
-  .mk-body{display:grid;grid-template-columns:260px 1fr 260px;min-height:340px}
-  .mk-p{padding:20px;border-right:1px solid var(--border)}
-  .mk-p:last-child{border-right:none}
-  .mk-p .pl{font-size:16px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text3);margin-bottom:10px}
-  .mk-input{background:var(--card);border-radius:8px;padding:14px;font-size:22px;color:var(--blue);font-weight:600;line-height:1.4}
-  .mk-log{font-size:19px;font-family:'SF Mono','Fira Code',monospace;color:var(--text2);padding:9px 0;border-bottom:1px solid var(--card);display:flex;gap:10px}
-  .mk-log .t{color:var(--text3);flex-shrink:0}
-  .mk-log .a{color:var(--green);font-weight:600}
-  .mk-sus{display:flex;align-items:center;justify-content:space-between;padding:12px 0;font-size:22px;color:var(--text2);font-weight:500}
-  .mk-sus .btr{width:100px;height:8px;background:var(--card);border-radius:4px;overflow:hidden}
-  .mk-sus .bf{height:100%;border-radius:4px}
-  .mk-sus .bf.h{background:var(--red)}
-  .mk-sus .bf.l{background:var(--border)}
-  .mk-sus .hit{color:var(--red);font-weight:700}
-  .mk-ft{grid-column:1/-1;padding:16px 24px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:#f0fdf4}
-  .mk-ft .vl{font-size:24px;color:var(--green);font-weight:700}
-  .mk-ft .vd{font-size:20px;color:var(--text2);margin-top:2px}
-  .mk-ft button{background:var(--text);color:var(--white);border:none;padding:12px 24px;border-radius:8px;font-weight:700;font-size:20px;cursor:default}
+      /* ═══ Agent flow ═══ */
+      .agent-flow {
+        display: flex;
+        align-items: stretch;
+        gap: 0;
+        margin-top: 36px;
+        width: 100%;
+      }
+      .af-step {
+        flex: 1;
+        text-align: center;
+        padding: 30px 12px;
+        border-radius: 14px;
+        background: var(--card);
+        position: relative;
+      }
+      .af-step.hl {
+        background: var(--blue);
+        color: var(--white);
+      }
+      .af-step .ico {
+        font-size: 52px;
+        margin-bottom: 6px;
+      }
+      .af-step h3 {
+        font-size: 27px;
+        font-weight: 700;
+      }
+      .af-step p {
+        font-size: 20px;
+        color: var(--text2);
+        margin-top: 2px;
+      }
+      .af-step.hl p {
+        color: rgba(255, 255, 255, 0.75);
+      }
+      .af-arr {
+        display: flex;
+        align-items: center;
+        font-size: 32px;
+        color: var(--text3);
+        padding: 0 6px;
+        flex-shrink: 0;
+      }
+      /* AI panel wrapping the whole loop */
+      .ai-panel {
+        margin-top: 30px;
+        border: 3px solid var(--blue);
+        border-radius: 22px;
+        padding: 26px 22px 22px;
+        position: relative;
+      }
+      .ai-panel .ai-tab {
+        position: absolute;
+        top: -18px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: var(--blue);
+        color: #fff;
+        font-size: 18px;
+        font-weight: 800;
+        padding: 7px 20px;
+        border-radius: 999px;
+        letter-spacing: 0.4px;
+        white-space: nowrap;
+      }
+      .ai-panel .agent-flow {
+        margin-top: 6px;
+      }
+      /* every step is AI now — uniform blue-tinted cards */
+      .af-step.ai {
+        background: rgba(0, 102, 204, 0.08);
+        border: 1.5px solid rgba(0, 102, 204, 0.25);
+      }
+      .af-step.ai h3 {
+        color: var(--blue);
+      }
+      /* data feed diagram */
+      .feeds {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-top: 24px;
+      }
+      .feeds .note {
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--blue);
+        margin-top: 10px;
+      }
+      /* human handoff after Report */
+      .handoff {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-top: 20px;
+      }
+      .handoff .note2 {
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--text3);
+        margin-bottom: 10px;
+      }
+      .human {
+        background: rgba(36, 138, 61, 0.08);
+        border: 1.5px solid rgba(36, 138, 61, 0.3);
+        border-radius: 14px;
+        padding: 15px 28px;
+        font-size: 23px;
+        color: var(--text2);
+        font-weight: 600;
+      }
+      .human b {
+        color: var(--green);
+        font-weight: 800;
+      }
+      .af-dbs {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+      }
+      .af-db {
+        background: var(--card);
+        border-radius: 12px;
+        padding: 14px 26px;
+        font-size: 20px;
+        font-weight: 600;
+        color: var(--text2);
+      }
 
-  /* ═══ Outlook · one brain, many skills ═══ */
-  .spine{display:flex;align-items:center;justify-content:center;gap:14px;margin-top:20px;font-size:19px;color:var(--text2);font-weight:600;flex-wrap:wrap}
-  .spine .pill{background:var(--card);border-radius:999px;padding:9px 18px}
-  .spine .x{color:var(--text3);font-weight:800}
-  .skills{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:28px}
-  .skill{background:var(--card);border-radius:16px;padding:26px 20px;position:relative;border:2px solid transparent}
-  .skill.live{border-color:var(--green);background:rgba(36,138,61,0.06)}
-  .skill .n{font-size:14px;font-weight:800;letter-spacing:0.6px;text-transform:uppercase;color:var(--text3)}
-  .skill.live .n{color:var(--green)}
-  .skill h3{font-size:24px;font-weight:800;margin-top:6px;line-height:1.15}
-  .skill p{font-size:17px;color:var(--text2);margin-top:6px;line-height:1.35}
-  .skill .badge{position:absolute;top:-12px;right:14px;font-size:12px;font-weight:800;padding:4px 12px;border-radius:999px;letter-spacing:0.5px}
-  .skill.live .badge{background:var(--green);color:#fff}
-  .skill.soon{opacity:0.55}
-  .skill.soon .badge{background:var(--border);color:var(--text2)}
+      /* ═══ Demo mockup ═══ */
+      .mk {
+        width: 100%;
+        border-radius: 14px;
+        overflow: hidden;
+        margin-top: 24px;
+        border: 1px solid var(--border);
+        box-shadow: 0 1px 12px rgba(0, 0, 0, 0.06);
+      }
+      .mk-bar {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        padding: 10px 18px;
+        background: var(--card);
+        border-bottom: 1px solid var(--border);
+      }
+      .mk-bar i {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        display: block;
+      }
+      .mk-bar i:nth-child(1) {
+        background: #ff5f57;
+      }
+      .mk-bar i:nth-child(2) {
+        background: #febc2e;
+      }
+      .mk-bar i:nth-child(3) {
+        background: #28c840;
+      }
+      .mk-bar span {
+        margin-left: 10px;
+        font-size: 18px;
+        color: var(--text2);
+        font-weight: 600;
+      }
+      .mk-body {
+        display: grid;
+        grid-template-columns: 240px 1fr 240px;
+        min-height: 300px;
+      }
+      .mk-p {
+        padding: 20px;
+        border-right: 1px solid var(--border);
+      }
+      .mk-p:last-child {
+        border-right: none;
+      }
+      .mk-p .pl {
+        font-size: 15px;
+        font-weight: 700;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        color: var(--text3);
+        margin-bottom: 10px;
+      }
+      .mk-input {
+        background: var(--card);
+        border-radius: 8px;
+        padding: 14px;
+        font-size: 21px;
+        color: var(--blue);
+        font-weight: 600;
+        line-height: 1.4;
+      }
+      .mk-log {
+        font-size: 18px;
+        font-family: "SF Mono", "Fira Code", monospace;
+        color: var(--text2);
+        padding: 8px 0;
+        border-bottom: 1px solid var(--card);
+        display: flex;
+        gap: 10px;
+      }
+      .mk-log .t {
+        color: var(--text3);
+        flex-shrink: 0;
+      }
+      .mk-log .a {
+        color: var(--green);
+        font-weight: 600;
+      }
+      .mk-sus {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 11px 0;
+        font-size: 21px;
+        color: var(--text2);
+        font-weight: 500;
+      }
+      .mk-sus .btr {
+        width: 90px;
+        height: 8px;
+        background: var(--card);
+        border-radius: 4px;
+        overflow: hidden;
+      }
+      .mk-sus .bf {
+        height: 100%;
+        border-radius: 4px;
+      }
+      .mk-sus .bf.h {
+        background: var(--red);
+      }
+      .mk-sus .bf.l {
+        background: var(--border);
+      }
+      .mk-sus .hit {
+        color: var(--red);
+        font-weight: 700;
+      }
+      .mk-ft {
+        grid-column: 1/-1;
+        padding: 16px 24px;
+        border-top: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: #f0fdf4;
+      }
+      .mk-ft .vl {
+        font-size: 24px;
+        color: var(--green);
+        font-weight: 700;
+      }
+      .mk-ft .vd {
+        font-size: 20px;
+        color: var(--text2);
+        margin-top: 2px;
+      }
+      .mk-ft button {
+        background: var(--text);
+        color: var(--white);
+        border: none;
+        padding: 12px 24px;
+        border-radius: 8px;
+        font-weight: 700;
+        font-size: 20px;
+        cursor: default;
+      }
 
-  /* ═══ 10 · Close ═══ */
-  .s-close{align-items:center;text-align:center;background:var(--text);color:var(--white)}
-  .s-close .q{font-size:40px;font-weight:400;line-height:1.55;color:rgba(255,255,255,0.5);max-width:900px;margin-bottom:48px}
-  .s-close .q strong{color:#fff;font-weight:700}
-  .s-close h1{font-size:100px;font-weight:900;letter-spacing:-4px}
-  .s-close .meta{font-size:18px;color:rgba(255,255,255,0.3);margin-top:12px}
-</style>
-</head>
-<body>
+      /* ═══ Blank placeholder ═══ */
+      .ph {
+        margin-top: 28px;
+        flex: 1;
+        max-height: 520px;
+        border: 2.5px dashed var(--border);
+        border-radius: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        color: var(--text3);
+        background: repeating-linear-gradient(
+          45deg,
+          #fafafa,
+          #fafafa 14px,
+          #f2f2f7 14px,
+          #f2f2f7 28px
+        );
+      }
+      .ph .ico {
+        font-size: 64px;
+        opacity: 0.4;
+      }
+      .ph .t {
+        font-size: 26px;
+        font-weight: 700;
+        margin-top: 12px;
+      }
+      .ph .s {
+        font-size: 19px;
+        margin-top: 4px;
+      }
 
-<!-- 1 · Title -->
-<div class="slide s-title active">
-  <h1>Foundry Brain</h1>
-  <div class="tag">Company Brain, <em>built for the fab</em></div>
-  <div class="meta">Transpose &times; Ritsumeikan University &times; OUVC &nbsp;&middot;&nbsp; YC RFS Summer 2026</div>
-</div>
+      /* ═══ What is Foundry Brain (intro) ═══ */
+      .intro {
+        font-size: 46px;
+        font-weight: 800;
+        letter-spacing: -1.5px;
+        line-height: 1.2;
+        margin-top: 24px;
+        max-width: 1050px;
+      }
+      .intro .hl {
+        color: var(--blue);
+      }
+      .intro-sub {
+        font-size: 28px;
+        color: var(--text2);
+        margin-top: 26px;
+        line-height: 1.45;
+        max-width: 1000px;
+      }
+      .intro-sub b {
+        color: var(--text);
+        font-weight: 700;
+      }
 
-<!-- 2 · Problem -->
-<div class="slide">
-  <div class="label">Problem</div>
-  <h2>Chip factories lose millions<br><span class="sub">waiting for one answer</span></h2>
-  <p style="font-size:24px;color:var(--text2);margin-top:8px;line-height:1.4">A chip factory ("fab") runs 1,000+ machines. When the good-chip rate drops, someone has to find which machine caused it &mdash; still done by hand.</p>
-  <div class="story">
-    <div class="story-step">
-      <div class="ico">🏭</div>
-      <h3>Factory runs</h3>
-      <p>Hundreds of wafers per day,<br>each worth $5K&ndash;$17K</p>
-      <span class="tag auto">always on</span>
-    </div>
-    <div class="story-arr">&rarr;</div>
-    <div class="story-step red-bg">
-      <div class="ico">📉</div>
-      <h3>Yield drops</h3>
-      <p>Good-chip rate suddenly falls<br><strong>90% &rarr; 78%</strong></p>
-      <span class="tag auto">flagged in seconds &middot; automatic</span>
-    </div>
-    <div class="story-arr jam">&raquo;</div>
-    <div class="story-step choke">
-      <div class="choke-badge">⚠ THE BOTTLENECK</div>
-      <div class="ico">🧑‍🔬</div>
-      <h3>Engineer investigates</h3>
-      <p>One of a few specialists ($120K+)<br>hunts through the data <strong>by hand</strong></p>
-      <span class="tag slow">⏳ hours &middot; manual &middot; can&apos;t scale</span>
-    </div>
-    <div class="story-arr jam">&raquo;</div>
-    <div class="story-step red-bg">
-      <div class="ico">💸</div>
-      <h3>$1&ndash;10M lost</h3>
-      <p>Production stalls for hours<br>while everything waits on the answer</p>
-      <span class="tag cost">accrues every hour</span>
-    </div>
-  </div>
-  <p style="text-align:center;font-size:20px;color:var(--text2);margin-top:24px;font-weight:600">Detection is instant and automated. Everything then <span style="color:var(--amber);font-weight:800">queues behind one human</span> — that&apos;s the chokepoint.</p>
-</div>
+      /* ═══ OS skills row ═══ */
+      .skillrow {
+        display: flex;
+        gap: 16px;
+        margin-top: 40px;
+      }
+      .skillbox {
+        flex: 1;
+        background: var(--card);
+        border-radius: 16px;
+        padding: 26px 18px;
+        text-align: center;
+        font-size: 23px;
+        font-weight: 700;
+        color: var(--text2);
+        border: 2px solid transparent;
+        position: relative;
+      }
+      .skillbox .si {
+        font-size: 44px;
+        display: block;
+        margin-bottom: 8px;
+      }
+      .skillbox.focus {
+        background: rgba(0, 102, 204, 0.08);
+        border-color: var(--blue);
+        color: var(--text);
+      }
+      .skillbox.dim {
+        opacity: 0.6;
+      }
+      .skillbox .badge {
+        position: absolute;
+        top: -13px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: var(--blue);
+        color: #fff;
+        font-size: 12px;
+        font-weight: 800;
+        padding: 4px 12px;
+        border-radius: 999px;
+        letter-spacing: 0.5px;
+        white-space: nowrap;
+      }
+      .osnote {
+        margin-top: 30px;
+        font-size: 24px;
+        color: var(--text2);
+        font-weight: 600;
+        text-align: center;
+      }
+      .osnote b {
+        color: var(--text);
+        font-weight: 800;
+      }
 
-<!-- 3 · Data — diagram of 3 DBs with X in center -->
-<div class="slide">
-  <div class="label">Data Landscape</div>
-  <h2>All the data exists. <span class="sub">Nothing connects it.</span></h2>
-  <p style="font-size:22px;color:var(--text2);margin-top:6px;line-height:1.4">To make one chip, a wafer runs through 1,000+ machine steps. Along the way, just <b>three things</b> get recorded &mdash; each in its own system, none built to talk to the others:</p>
-  <div class="dgrid">
-    <div class="dcard">
-      <div class="ico">📡</div>
-      <div class="angle">What the machine did</div>
-      <h3>Machine Sensors</h3>
-      <div class="sub">Every machine logs temperature, pressure &amp; power — second by second.</div>
-      <div class="sample">
-        <div class="r"><span>Etch-3&nbsp;/&nbsp;C&nbsp;&nbsp;10:00</span><span>2.10&nbsp;kW</span></div>
-        <div class="r bad"><span>Etch-3&nbsp;/&nbsp;C&nbsp;&nbsp;11:00</span><span>2.31&nbsp;kW</span></div>
-        <div class="r"><span>Etch-3&nbsp;/&nbsp;C&nbsp;&nbsp;13:00</span><span>2.12&nbsp;kW</span></div>
+      /* ═══ Track / build-on badge ═══ */
+      .trackbadge {
+        display: inline-block;
+        align-self: flex-start;
+        background: var(--blue);
+        color: #fff;
+        font-size: 22px;
+        font-weight: 800;
+        padding: 10px 24px;
+        border-radius: 999px;
+        letter-spacing: 1px;
+        margin-bottom: 16px;
+      }
+      .track-hero {
+        font-size: 110px;
+        font-weight: 900;
+        letter-spacing: -4px;
+        color: var(--blue);
+        line-height: 1;
+      }
+
+      /* ═══ One-line statement ═══ */
+      .s-statement {
+        align-items: center;
+        text-align: center;
+      }
+      .s-statement h2 {
+        font-size: 78px;
+        line-height: 1.12;
+        max-width: 1150px;
+        letter-spacing: -3px;
+      }
+      .s-statement .hl {
+        color: var(--blue);
+      }
+
+      /* ═══ Market outlook ═══ */
+      .mkt {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 24px;
+        margin-top: 28px;
+      }
+      .mkt-bars {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      .mkt-bar {
+        background: var(--card);
+        border-radius: 14px;
+        padding: 22px 26px;
+      }
+      .mkt-bar .v {
+        font-size: 52px;
+        font-weight: 800;
+        letter-spacing: -2px;
+      }
+      .mkt-bar .v.b {
+        color: var(--blue);
+      }
+      .mkt-bar .v.g {
+        color: var(--green);
+      }
+      .mkt-bar .v.a {
+        color: var(--amber);
+      }
+      .mkt-bar .l {
+        font-size: 22px;
+        color: var(--text2);
+        margin-top: 2px;
+      }
+      .mkt-steps {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+        justify-content: center;
+      }
+      .mkt-s {
+        border-left: 4px solid var(--blue);
+        padding: 6px 0 6px 22px;
+      }
+      .mkt-s h4 {
+        font-size: 27px;
+        font-weight: 700;
+      }
+      .mkt-s p {
+        font-size: 20px;
+        color: var(--text2);
+        margin-top: 2px;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- 1 · Title -->
+    <div class="slide s-title active">
+      <h1>Foundry Brain</h1>
+      <div class="tag">
+        OS for the semiconductor factory,<br />sharpened for yield analysis
       </div>
-      <div class="key">identified by <b>machine + time</b></div>
-    </div>
-    <div class="dcard">
-      <div class="ico">🏭</div>
-      <div class="angle">Where the wafer went</div>
-      <h3>Production History</h3>
-      <div class="sub">Which batch ran on which machine &amp; chamber, and when.</div>
-      <div class="sample">
-        <div class="r bad"><span>LOT-0704</span><span>&rarr; Etch-3 / C</span></div>
-        <div class="r bad"><span>LOT-0708</span><span>&rarr; Etch-3 / C</span></div>
-        <div class="r"><span>LOT-0701</span><span>&rarr; Etch-1 / A</span></div>
-      </div>
-      <div class="key">identified by <b>lot number</b></div>
-    </div>
-    <div class="dcard">
-      <div class="ico">🔬</div>
-      <div class="angle">How it turned out</div>
-      <h3>Quality Inspection</h3>
-      <div class="sub">Film thickness &amp; defects measured on each finished batch.</div>
-      <div class="sample">
-        <div class="r bad"><span>LOT-0704&nbsp;&nbsp;44.8&nbsp;nm</span><span>✗ FAIL</span></div>
-        <div class="r ok"><span>LOT-0701&nbsp;&nbsp;48.3&nbsp;nm</span><span>✓ pass</span></div>
-        <div class="r ok"><span>LOT-0705&nbsp;&nbsp;48.4&nbsp;nm</span><span>✓ pass</span></div>
-      </div>
-      <div class="key">identified by <b>lot number + wafer</b></div>
-    </div>
-  </div>
-  <div class="mismatch">
-    <span class="pill">machine + time</span>
-    <span class="neq">&ne;</span>
-    <span class="pill">lot number</span>
-    <span class="neq">&ne;</span>
-    <span class="pill">lot + wafer</span>
-    <span class="concl">&rarr; no shared key, so a senior engineer stitches them together by hand — every single time.</span>
-  </div>
-</div>
-
-<!-- 4 · Why Unsolved — icon-first cards, minimal text -->
-<div class="slide">
-  <div class="label">Why Unsolved = Why Massive Opportunity</div>
-  <h2>Three barriers <span class="sub">= three moats</span></h2>
-  <div class="moats">
-    <div class="moat">
-      <div class="ico">🔀</div>
-      <h3>Fragmented Data</h3>
-      <p>3 systems, different IDs and time scales. No simple way to connect.</p>
-    </div>
-    <div class="moat">
-      <div class="ico">🔒</div>
-      <h3>Top Secret Data</h3>
-      <p>Yield data is a fab's crown jewel. No cloud, no outside vendors allowed.</p>
-    </div>
-    <div class="moat">
-      <div class="ico">🧠</div>
-      <h3>Expert Knowledge</h3>
-      <p>Lives in senior engineers' heads. When they retire, it's gone.</p>
-    </div>
-  </div>
-</div>
-
-<!-- 5 · Solution — before/after visual -->
-<div class="slide">
-  <div class="label">Solution</div>
-  <h2>AI Yield Engineer</h2>
-  <p style="font-size:24px;color:var(--text2);margin-top:4px;margin-bottom:4px">The fab&apos;s brain &mdash; and its first skill: diagnose a yield drop like an expert, in minutes, not hours.</p>
-  <div class="ba">
-    <div class="ba-side before">
-      <h3>Today</h3>
-      <div class="ba-row"><div class="ico">📊</div><span>Tools show charts &mdash; humans interpret</span></div>
-      <div class="ba-row"><div class="ico">🗂️</div><span>One database at a time, manually</span></div>
-      <div class="ba-row"><div class="ico">⏱️</div><span>Hours to find root cause</span></div>
-      <div class="ba-row"><div class="ico">❓</div><span>No recommendation: stop or ship?</span></div>
-    </div>
-    <div class="ba-arrow">&rarr;</div>
-    <div class="ba-side after">
-      <h3>Foundry Brain</h3>
-      <div class="ba-row"><div class="ico">🤖</div><span>AI investigates across all 3 DBs</span></div>
-      <div class="ba-row"><div class="ico">🎯</div><span>Finds root cause with evidence</span></div>
-      <div class="ba-row"><div class="ico">⚡</div><span>Minutes, not hours</span></div>
-      <div class="ba-row"><div class="ico">✅</div><span>Tells you: stop or keep shipping</span></div>
-    </div>
-  </div>
-</div>
-
-<!-- 6 · How it works — agent flow -->
-<div class="slide">
-  <div class="label">How It Works</div>
-  <h2>AI agent walks through data <span class="sub">like an expert would</span></h2>
-  <div class="agent-flow">
-    <div class="af-step"><div class="ico">🚨</div><h3>Alert</h3><p>Yield dropped</p></div>
-    <div class="af-arr">&rarr;</div>
-    <div class="af-step hl"><div class="ico">🔍</div><h3>Investigate</h3><p>Query 3 databases</p></div>
-    <div class="af-arr">&rarr;</div>
-    <div class="af-step hl"><div class="ico">🎯</div><h3>Diagnose</h3><p>Find root cause</p></div>
-    <div class="af-arr">&rarr;</div>
-    <div class="af-step"><div class="ico">⚡</div><h3>Decide</h3><p>Hold or ship?</p></div>
-    <div class="af-arr">&rarr;</div>
-    <div class="af-step"><div class="ico">📄</div><h3>Report</h3><p>Evidence + action</p></div>
-  </div>
-  <div class="af-dbs">
-    <div class="af-db">📡 Machine Sensors</div>
-    <div class="af-db">🏭 Production History</div>
-    <div class="af-db">🔬 Quality Inspection</div>
-  </div>
-</div>
-
-<!-- 7 · Why Now -->
-<div class="slide">
-  <div class="label">Why Now</div>
-  <h2>The window is open</h2>
-  <div class="moats">
-    <div class="moat">
-      <div class="ico">🤖</div>
-      <h3>LLM Agents</h3>
-      <p>No training data needed. Reasons over live data on the spot.</p>
-    </div>
-    <div class="moat">
-      <div class="ico">🏗️</div>
-      <h3>$500B New Fabs</h3>
-      <p>No existing tools, no expert staff. Need AI from Day 1.</p>
-    </div>
-    <div class="moat">
-      <div class="ico">🇯🇵</div>
-      <h3>Japan Beachhead</h3>
-      <p>Rapidus: national 2nm fab. Data = national security. Domestic on-prem only.</p>
-    </div>
-  </div>
-</div>
-
-<!-- 8 · Market -->
-<div class="slide">
-  <div class="label">Market</div>
-  <h2>Capturing the <span class="sub">$300B loss pool</span></h2>
-  <div class="mkt">
-    <div class="mkt-bars">
-      <div class="mkt-bar"><div class="v b">$300&ndash;600B</div><div class="l">Annual defect losses globally</div></div>
-      <div class="mkt-bar"><div class="v g">$1&ndash;2B</div><div class="l">TAM &mdash; ~1,200 fabs</div></div>
-      <div class="mkt-bar"><div class="v a">$1&ndash;10M</div><div class="l">Value per factory per year</div></div>
-    </div>
-    <div class="mkt-tgts">
-      <div class="mkt-t"><h4>Wedge &rarr; New factories</h4><p>No tools, no staff. Easiest sale.</p></div>
-      <div class="mkt-t"><h4>Beachhead &rarr; Rapidus</h4><p>Japan's national fab. On-prem only.</p></div>
-      <div class="mkt-t"><h4>Expand &rarr; Global fabs</h4><p>TSMC, Intel, Samsung &mdash; same problem.</p></div>
-    </div>
-  </div>
-</div>
-
-<!-- 9 · Demo -->
-<div class="slide">
-  <div class="label">Live Demo</div>
-  <h2>Watch the agent investigate</h2>
-  <p style="font-size:22px;color:var(--text2);margin-top:2px;margin-bottom:2px">The <b>Excursion Diagnosis</b> skill queries all three systems, then launches this view.</p>
-  <div class="mk">
-    <div class="mk-bar"><i></i><i></i><i></i><span>Foundry Brain</span></div>
-    <div class="mk-body">
-      <div class="mk-p">
-        <div class="pl">Input</div>
-        <div class="mk-input">"Yield dropped 12%"</div>
-      </div>
-      <div class="mk-p">
-        <div class="pl">Investigation Log</div>
-        <div class="mk-log"><span class="t">00:01</span><span class="a">inspection</span> 5 lots fail spec</div>
-        <div class="mk-log"><span class="t">00:03</span><span class="a">production</span> Trace lot routing</div>
-        <div class="mk-log"><span class="t">00:05</span><span class="a">analysis</span> Cross-referencing</div>
-        <div class="mk-log"><span class="t">00:08</span><span class="a">sensors</span> Power drift on Etch #3</div>
-        <div class="mk-log"><span class="t">00:10</span><span class="a">analysis</span> Chamber C common</div>
-        <div class="mk-log"><span class="t">00:12</span><span class="a">verdict</span> Root cause found</div>
-      </div>
-      <div class="mk-p" style="border-right:none">
-        <div class="pl">Suspect Machines</div>
-        <div class="mk-sus"><span>Etch #1</span><div class="btr"><div class="bf l" style="width:15%"></div></div></div>
-        <div class="mk-sus"><span>Etch #2</span><div class="btr"><div class="bf l" style="width:10%"></div></div></div>
-        <div class="mk-sus"><span class="hit">Etch #3</span><div class="btr"><div class="bf h" style="width:94%"></div></div></div>
-        <div class="mk-sus"><span>Dep #1</span><div class="btr"><div class="bf l" style="width:8%"></div></div></div>
-        <div class="mk-sus"><span>Litho #2</span><div class="btr"><div class="bf l" style="width:5%"></div></div></div>
-      </div>
-      <div class="mk-ft">
-        <div><div class="vl">Root Cause: Etching Machine #3</div><div class="vd">Power drift &rarr; defects. 23 batches affected.</div></div>
-        <button>Generate Hold Order &rarr;</button>
+      <div class="meta">
+        Transpose &times; Ritsumeikan University &times; OUVC
+        &nbsp;&middot;&nbsp; YC RFS Summer 2026
       </div>
     </div>
-  </div>
-</div>
 
-<!-- 10 · Outlook — one brain, many skills -->
-<div class="slide">
-  <div class="label">Where This Goes</div>
-  <h2>One brain. <span class="sub">The data compounds.</span></h2>
-  <p style="font-size:23px;color:var(--text2);margin-top:6px;line-height:1.4">Every excursion Foundry Brain solves becomes fab memory. The same data spine can carry more skills over time &mdash; we ship the first one today.</p>
-  <div class="spine">
-    <span class="pill">📡 Machine Sensors</span><span class="x">&times;</span>
-    <span class="pill">🏭 Production History</span><span class="x">&times;</span>
-    <span class="pill">🔬 Quality Inspection</span>
-    <span class="x">+</span><span class="pill">🧠 accumulated memory</span>
-  </div>
-  <div class="skills">
-    <div class="skill live">
-      <div class="badge">LIVE</div>
-      <div class="n">Skill 1</div>
-      <h3>Excursion Diagnosis</h3>
-      <p>Yield dropped &mdash; find the root-cause machine, with evidence.</p>
+    <!-- 2 · What is Foundry Brain — Company Brain -->
+    <div class="slide">
+      <h2>
+        Foundry Brain is the OS
+        <span class="sub">for the semiconductor factory.</span>
+      </h2>
+      <div class="pipe">
+        <div class="pcard">
+          <div class="ico">🧩</div>
+          <h3>One OS, many skills</h3>
+          <p>One brain for the whole factory, extended skill by skill.</p>
+        </div>
+        <div class="pcard">
+          <div class="ico">🎯</div>
+          <h3>Sharpened on yield</h3>
+          <p>Yield is the factory's most critical metric &mdash; so it's our first, deepest skill.</p>
+        </div>
+        <div class="pcard">
+          <div class="ico">🔁</div>
+          <h3>It improves itself</h3>
+          <p>A built-in loop learns from every case and evolves.</p>
+        </div>
+      </div>
     </div>
-    <div class="skill soon">
-      <div class="badge">LATER</div>
-      <div class="n">Skill 2</div>
-      <h3>Hold&nbsp;or&nbsp;Ship</h3>
-      <p>Affected WIP &mdash; hold or ship, risk-scored.</p>
-    </div>
-    <div class="skill soon">
-      <div class="badge">LATER</div>
-      <div class="n">Skill 3</div>
-      <h3>Drift Watch</h3>
-      <p>Catch in-spec drift before it becomes an excursion.</p>
-    </div>
-    <div class="skill soon">
-      <div class="badge">LATER</div>
-      <div class="n">Skill 4</div>
-      <h3>Commonality</h3>
-      <p>Bad lots &mdash; what do they share across every system?</p>
-    </div>
-  </div>
-</div>
 
-<!-- 11 · Close -->
-<div class="slide s-close">
-  <div class="q">Three reasons this can't be done &mdash;<br>secrecy, complexity, expert knowledge.<br><br>Those three are exactly why<br><strong>this is a massive business.</strong></div>
-  <h1>Foundry Brain</h1>
-  <div class="meta">Transpose &times; Ritsumeikan &times; OUVC</div>
-</div>
+    <!-- 3 · Hackathon — Company Brain track & stack -->
+    <div class="slide">
+      <span class="trackbadge">🏆 OUR HACKATHON TRACK</span>
+      <h2 class="track-hero">Company Brain</h2>
+      <p class="intro-sub">Built on <b>G-Stack</b> &amp; <b>G-Brain</b>.</p>
+      <div class="pipe">
+        <div class="pcard">
+          <div class="ico">🧱</div>
+          <h3>G-Stack</h3>
+          <p>The agent skill suite Foundry Brain is built on.</p>
+        </div>
+        <div class="pcard">
+          <div class="ico">🧠</div>
+          <h3>G-Brain</h3>
+          <p>The persistent brain that stores &amp; recalls fab knowledge.</p>
+        </div>
+      </div>
+    </div>
 
-<div class="nav" id="nav"></div>
-<div class="sn" id="sn">1 / 11</div>
-<script>
-const ss=document.querySelectorAll('.slide'),nav=document.getElementById('nav'),sn=document.getElementById('sn');let c=0;
-ss.forEach((_,i)=>{const d=document.createElement('button');d.className='nav-dot'+(i===0?' active':'');d.onclick=()=>go(i);nav.appendChild(d)});
-function go(i){if(i<0||i>=ss.length)return;ss[c].classList.remove('active');nav.children[c].classList.remove('active');c=i;ss[c].classList.add('active');nav.children[c].classList.add('active');sn.textContent=(c+1)+' / '+ss.length}
-document.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key===' '){e.preventDefault();go(c+1)}if(e.key==='ArrowLeft'){e.preventDefault();go(c-1)}});
-let tx=0;document.addEventListener('touchstart',e=>{tx=e.touches[0].clientX});document.addEventListener('touchend',e=>{const d=tx-e.changedTouches[0].clientX;if(Math.abs(d)>50)d>0?go(c+1):go(c-1)});
-</script>
-</body>
+    <!-- 4 · Center pin statement -->
+    <div class="slide s-statement">
+      <h2>
+        The center pin of the factory OS is
+        <span class="hl">yield analysis.</span>
+      </h2>
+    </div>
+
+    <!-- 4 · Hook — Rapidus -->
+    <div class="slide hook">
+      <div class="flag">🇯🇵 JAPAN'S BIG BET</div>
+      <h1>Rapidus</h1>
+      <p class="lead">
+        Japan's nation-backed foundry, racing to mass-produce
+        <b>2nm chips by 2027</b>.
+      </p>
+      <div class="stats">
+        <div class="stat">
+          <div class="v b">2027</div>
+          <div class="l">2nm mass-production</div>
+        </div>
+        <div class="stat">
+          <div class="v b">&yen;1T+</div>
+          <div class="l">public funding</div>
+        </div>
+        <div class="stat">
+          <div class="v b">6k&rarr;25k</div>
+          <div class="l">wafers / month</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3 · What is yield -->
+    <div class="slide">
+      <h2>What is <span class="sub">"yield"?</span></h2>
+      <div class="yield-wrap">
+        <div class="wafer">
+          <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i> <i></i><i></i
+          ><i></i><i class="bad"></i><i></i><i></i><i></i><i></i> <i></i><i></i
+          ><i></i><i></i><i></i><i></i><i class="bad"></i><i></i> <i></i
+          ><i class="bad"></i><i></i><i></i><i></i><i></i><i></i><i></i> <i></i
+          ><i></i><i></i><i></i><i class="bad"></i><i></i><i></i><i></i> <i></i
+          ><i></i><i class="bad"></i><i></i><i></i><i></i><i></i><i></i> <i></i
+          ><i></i><i></i><i></i><i></i><i></i><i class="bad"></i><i></i> <i></i
+          ><i class="bad"></i><i></i><i></i><i></i><i></i><i></i><i></i>
+        </div>
+        <div class="yield-def">
+          <div class="frac-eq">
+            <div class="frac">
+              <span class="num">good chips</span>
+              <span class="den">all chips made</span>
+            </div>
+            <span class="eq">=</span>
+            <span class="res">yield</span>
+          </div>
+          <div class="eg">
+            e.g. <b>90</b> good out of <b>100</b> = <b>90% yield</b><br />
+            the other <span class="rd">10 are scrapped</span> &mdash; pure loss.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4 · Problem — the yield KPI gap -->
+    <div class="slide">
+      <h2>Yield is the KPI. <span class="sub">2027 is the deadline.</span></h2>
+      <div class="ba">
+        <div class="ba-side before">
+          <div class="k">Starting point</div>
+          <h3>~50%</h3>
+          <p>Initial trial yield.</p>
+        </div>
+        <div class="ba-arrow">&rarr;</div>
+        <div class="ba-side after">
+          <div class="k">2027 KPI</div>
+          <h3>80&ndash;90%</h3>
+          <p>Needed to ship at a profit.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4 · Pipeline — plain language -->
+    <div class="slide">
+      <h2>
+        Making a chip: 1,000+ steps.
+        <span class="sub">Three that matter today.</span>
+      </h2>
+      <div class="pipe">
+        <div class="pcard">
+          <div class="ico">🎨</div>
+          <h3>Coat</h3>
+          <p>
+            Grow an ultra-thin film &mdash; like spray-painting a layer of
+            atoms.
+          </p>
+          <div class="jarg">a.k.a. CVD</div>
+        </div>
+        <div class="pcard">
+          <div class="ico">🔪</div>
+          <h3>Carve</h3>
+          <p>Cut the circuit pattern into it &mdash; like etching glass.</p>
+          <div class="jarg">a.k.a. Etching</div>
+        </div>
+        <div class="pcard">
+          <div class="ico">💿</div>
+          <h3>Polish</h3>
+          <p>Grind it mirror-flat for the next layer &mdash; like sanding.</p>
+          <div class="jarg">a.k.a. CMP</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5 · Yield engineer — the job -->
+    <div class="slide">
+      <h2>
+        The yield engineer
+        <span class="sub">analyzes the cause &amp; proposes the action.</span>
+      </h2>
+      <div class="pipe">
+        <div class="pcard">
+          <div class="ico">🔍</div>
+          <h3>Analyze</h3>
+          <p>Which of the 1,000+ steps caused the yield drop?</p>
+        </div>
+        <div class="pcard">
+          <div class="ico">🎯</div>
+          <h3>Propose</h3>
+          <p>The next move &mdash; hold the lot, tune the machine, or ship.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6 · Yield engineer — the data -->
+    <div class="slide">
+      <h2>
+        To do it, they cross three systems, by hand.
+      </h2>
+      <div class="dgrid">
+        <div class="dcard">
+          <div class="ico">📡</div>
+          <div class="angle">What the machine did</div>
+          <h3>Sensor Data</h3>
+        </div>
+        <div class="dcard">
+          <div class="ico">🏭</div>
+          <div class="angle">Where the wafer went</div>
+          <h3>Production History</h3>
+        </div>
+        <div class="dcard">
+          <div class="ico">🔬</div>
+          <div class="angle">How it turned out</div>
+          <h3>Inspection Results</h3>
+        </div>
+      </div>
+      <div class="stall">
+        Every investigation takes <b>days</b> &mdash; so yield
+        <b class="rd">barely climbs.</b>
+      </div>
+    </div>
+
+    <!-- 6b · Yield engineer — video -->
+    <div class="slide">
+      <h2>What the job <span class="sub">looks like.</span></h2>
+      <div class="video-wrap">
+        <iframe
+          src="https://www.youtube.com/embed/J_I4sp7AZ-c?start=63"
+          title="Yield engineering"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen
+        ></iframe>
+      </div>
+    </div>
+
+    <!-- 6 · Solution — Foundry Brain -->
+    <div class="slide">
+      <h2>
+        Solution: Foundry Brain
+        <span class="sub">replaces the yield engineer.</span>
+      </h2>
+      <div class="ba">
+        <div class="ba-side before">
+          <div class="k">Today</div>
+          <h3>One human, days</h3>
+        </div>
+        <div class="ba-arrow">&rarr;</div>
+        <div class="ba-side after">
+          <div class="k">Foundry Brain</div>
+          <h3>AI, minutes</h3>
+        </div>
+      </div>
+      <div class="stall">
+        Diagnose in minutes &rarr; iterate faster &rarr;
+        <b class="gr">yield climbs faster.</b>
+      </div>
+    </div>
+
+    <!-- 7 · Features -->
+    <div class="slide">
+      <h2>Features: <span class="sub">the AI runs the whole loop.</span></h2>
+      <div class="feeds">
+        <div class="af-dbs">
+          <div class="af-db">📡 Sensor Data</div>
+          <div class="af-db">🏭 Production History</div>
+          <div class="af-db">🔬 Inspection Results</div>
+        </div>
+        <div class="note">reads all three systems, automatically &nbsp;&darr;</div>
+      </div>
+      <div class="ai-panel">
+        <span class="ai-tab">🤖 Foundry Brain &middot; every step, done by AI</span>
+        <div class="agent-flow">
+          <div class="af-step ai">
+            <div class="ico">🚨</div>
+            <h3>Alert</h3>
+            <p>Yield dropped</p>
+          </div>
+          <div class="af-arr">&rarr;</div>
+          <div class="af-step ai">
+            <div class="ico">🔍</div>
+            <h3>Investigate</h3>
+            <p>Query 3 systems</p>
+          </div>
+          <div class="af-arr">&rarr;</div>
+          <div class="af-step ai">
+            <div class="ico">🎯</div>
+            <h3>Diagnose</h3>
+            <p>Find root cause</p>
+          </div>
+          <div class="af-arr">&rarr;</div>
+          <div class="af-step ai">
+            <div class="ico">⚡</div>
+            <h3>Decide</h3>
+            <p>Hold or ship?</p>
+          </div>
+          <div class="af-arr">&rarr;</div>
+          <div class="af-step ai">
+            <div class="ico">📄</div>
+            <h3>Report</h3>
+            <p>Evidence + action</p>
+          </div>
+        </div>
+      </div>
+      <div class="handoff">
+        <div class="note2">&darr;&nbsp; hands off the answer</div>
+        <div class="human">
+          🧑‍🔧&nbsp; The engineer <b>just acts on the result</b> &mdash; approve
+          &amp; execute.
+        </div>
+      </div>
+    </div>
+
+    <!-- 8 · Demo -->
+    <div class="slide">
+      <h2>Live demo: <span class="sub">watch it investigate.</span></h2>
+      <div class="mk">
+        <div class="mk-bar">
+          <i></i><i></i><i></i><span>Foundry Brain</span>
+        </div>
+        <div class="mk-body">
+          <div class="mk-p">
+            <div class="pl">Input</div>
+            <div class="mk-input">"Yield dropped 12%"</div>
+          </div>
+          <div class="mk-p">
+            <div class="pl">Investigation Log</div>
+            <div class="mk-log">
+              <span class="t">00:01</span><span class="a">inspection</span> 5
+              lots fail spec
+            </div>
+            <div class="mk-log">
+              <span class="t">00:03</span
+              ><span class="a">production</span> Trace lot routing
+            </div>
+            <div class="mk-log">
+              <span class="t">00:08</span><span class="a">sensors</span> Power
+              drift on Etch #3
+            </div>
+            <div class="mk-log">
+              <span class="t">00:10</span
+              ><span class="a">analysis</span> Chamber C common
+            </div>
+            <div class="mk-log">
+              <span class="t">00:12</span><span class="a">verdict</span> Root
+              cause found
+            </div>
+          </div>
+          <div class="mk-p" style="border-right: none">
+            <div class="pl">Suspect Machines</div>
+            <div class="mk-sus">
+              <span>Etch #1</span>
+              <div class="btr"><div class="bf l" style="width: 15%"></div></div>
+            </div>
+            <div class="mk-sus">
+              <span>Etch #2</span>
+              <div class="btr"><div class="bf l" style="width: 10%"></div></div>
+            </div>
+            <div class="mk-sus">
+              <span class="hit">Etch #3</span>
+              <div class="btr"><div class="bf h" style="width: 94%"></div></div>
+            </div>
+            <div class="mk-sus">
+              <span>Dep #1</span>
+              <div class="btr"><div class="bf l" style="width: 8%"></div></div>
+            </div>
+          </div>
+          <div class="mk-ft">
+            <div>
+              <div class="vl">Root Cause: Etching Machine #3</div>
+              <div class="vd">
+                Power drift &rarr; defects. 23 batches affected.
+              </div>
+            </div>
+            <button>Generate Hold Order &rarr;</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- System architecture (placeholder) -->
+    <div class="slide">
+      <h2>System architecture</h2>
+      <div class="ph">
+        <div class="ico">🧩</div>
+        <div class="t">System architecture diagram</div>
+        <div class="s">
+          Agent, data connectors &amp; the three systems &mdash; diagram to come
+        </div>
+      </div>
+    </div>
+
+    <!-- 11 · Market outlook — the ceiling is the sky -->
+    <div class="slide">
+      <h2>No ceiling. <span class="sub">The market only grows.</span></h2>
+      <div class="mkt">
+        <div class="mkt-bars">
+          <div class="mkt-bar">
+            <div class="v b">$300&ndash;600B</div>
+            <div class="l">Lost to defects every year</div>
+          </div>
+          <div class="mkt-bar">
+            <div class="v g">~1,200</div>
+            <div class="l">Fabs worldwide</div>
+          </div>
+          <div class="mkt-bar">
+            <div class="v a">$500B+</div>
+            <div class="l">New fabs being built</div>
+          </div>
+        </div>
+        <div class="mkt-steps">
+          <div class="mkt-s"><h4>Wedge &rarr; Rapidus</h4></div>
+          <div class="mkt-s"><h4>Expand &rarr; New fabs</h4></div>
+          <div class="mkt-s"><h4>Global &rarr; Every fab</h4></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 12 · Close -->
+    <div class="slide s-close">
+      <div class="q">
+        The reasons this was never solved<br />are exactly why
+        <strong>it's a massive business.</strong>
+      </div>
+      <h1>Foundry Brain</h1>
+      <div class="meta">Transpose &times; Ritsumeikan &times; OUVC</div>
+    </div>
+
+    <div class="nav" id="nav"></div>
+    <div class="sn" id="sn">1 / 17</div>
+    <script>
+      const ss = document.querySelectorAll(".slide"),
+        nav = document.getElementById("nav"),
+        sn = document.getElementById("sn");
+      let c = 0;
+      ss.forEach((_, i) => {
+        const d = document.createElement("button");
+        d.className = "nav-dot" + (i === 0 ? " active" : "");
+        d.onclick = () => go(i);
+        nav.appendChild(d);
+      });
+      function go(i) {
+        if (i < 0 || i >= ss.length) return;
+        ss[c].classList.remove("active");
+        nav.children[c].classList.remove("active");
+        c = i;
+        ss[c].classList.add("active");
+        nav.children[c].classList.add("active");
+        sn.textContent = c + 1 + " / " + ss.length;
+      }
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "ArrowRight" || e.key === " ") {
+          e.preventDefault();
+          go(c + 1);
+        }
+        if (e.key === "ArrowLeft") {
+          e.preventDefault();
+          go(c - 1);
+        }
+      });
+      let tx = 0;
+      document.addEventListener("touchstart", (e) => {
+        tx = e.touches[0].clientX;
+      });
+      document.addEventListener("touchend", (e) => {
+        const d = tx - e.changedTouches[0].clientX;
+        if (Math.abs(d) > 50) d > 0 ? go(c + 1) : go(c - 1);
+      });
+    </script>
+  </body>
 </html>
