@@ -49,9 +49,9 @@ function activeSource(scene: Scene): SourceId {
 type Tab = "pipeline" | "data" | "investigation";
 
 const TAB_LABELS: Record<Tab, string> = {
-  pipeline: "Fab Pipeline",
-  data: "Raw Data",
+  pipeline: "Root Cause",
   investigation: "Investigation",
+  data: "Raw Data",
 };
 
 export default function Home() {
@@ -218,7 +218,7 @@ export default function Home() {
         <main className="flex min-h-0 flex-1 flex-col overflow-y-auto">
           {/* tabs */}
           <div className="flex shrink-0 border-b border-slate-200 bg-white px-6 pt-3">
-            {(["pipeline", "data", "investigation"] as Tab[]).map((t) => (
+            {(["pipeline", "investigation", "data"] as Tab[]).map((t) => (
               <button
                 key={t}
                 onClick={() => !isRunning && setTab(t)}
