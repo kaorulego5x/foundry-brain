@@ -1,24 +1,31 @@
 # Foundry Brain
 
-Company Brain, built for the fab. Skill #1: **AI Yield Engineer**.
+Company Brain, built for the fab. **One brain + multiple skills (GStack model).**
+
+## Architecture
+
+| Layer | Path | Role |
+| --- | --- | --- |
+| **Brain** | `.claude/skills/foundry-brain/` | Shared MES/FDC/Metrology data + gbrain memory tools |
+| **Platform** | `.claude/skills/gstack/` | GStack workflow platform |
+| **Skills** | `ai-yield-engineer`, `hold-or-ship`, … | Fab capabilities on the shared brain |
 
 ## Skill routing
 
-- Fab yield drop, excursion diagnosis, hold-or-ship on lots → invoke **`/ai-yield-engineer`**
-- Legacy name `/excursion-diagnosis` redirects to the same workflow
+- Fab yield drop, excursion, hold-or-ship → **`/ai-yield-engineer`** (skill #1)
+- “Foundry Brain” overview → **`/foundry-brain`**
+- Legacy `/excursion-diagnosis` → redirects to `/ai-yield-engineer`
 
 ## Memory (optional)
 
-Run **`/setup-gbrain`** once for cross-session memory. Each analysis is saved to
-gbrain under `foundry-excursions/<id>` and rated via auto-eval + visualizer 👍/👎.
+Run **`/setup-gbrain`** once. Analyses save to gbrain `foundry-excursions/<id>`;
+rated via auto-eval + visualizer 👍/👎. See `foundry-brain/SKILL.md`.
 
 ## Demo
 
-Start the visualizer (persists outside agent sessions):
-
 ```bash
+cd visualizer && npm run seed-analyses   # copy fixture → public/analyses/
 cd visualizer && npm run dev:start
 ```
 
-After `/ai-yield-engineer` completes, open **http://localhost:3000** to replay the
-investigation. Stop with `npm run dev:stop`.
+After `/ai-yield-engineer`, open **http://localhost:3000**. Stop with `npm run dev:stop`.

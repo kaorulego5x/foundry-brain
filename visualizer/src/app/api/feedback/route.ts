@@ -34,7 +34,7 @@ export async function POST(req: Request) {
 
   const syncScript = path.resolve(
     process.cwd(),
-    "../.claude/skills/ai-yield-engineer/bin/foundry-sync-feedback.py",
+    "../.claude/skills/foundry-brain/bin/foundry-sync-feedback.py",
   );
   try {
     await execFileAsync("python3", [syncScript, fbPath]);

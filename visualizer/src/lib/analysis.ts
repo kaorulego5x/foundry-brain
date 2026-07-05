@@ -1,6 +1,6 @@
 // A single stored excursion analysis — everything the UI needs to *replay* a
-// past investigation. Records are written by the excursion-diagnosis skill into
-// public/analyses/<id>.json and listed in public/analyses/index.json.
+// past investigation. Runtime records live in public/analyses/ (gitignored);
+// demo seed: foundry-brain/fixtures/analyses/. Written by /ai-yield-engineer.
 
 import type { Column, Row } from "./demo-data";
 export type { Column, Row, RowState } from "./demo-data";

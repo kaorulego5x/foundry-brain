@@ -91,7 +91,7 @@ flowchart TB
 | Platform | `.claude/skills/gstack/` | Routing, preamble, learnings, gbrain integration bins |
 | Agent | Claude Code (host) | Executes skill; **is** the LLM — no separate inference API |
 | Memory | gbrain + `foundry-excursions/*` | Cross-session case history |
-| Data spine | `ai-yield-engineer/data/` | Fab inputs (mock today) |
+| Data spine | `foundry-brain/data/` | Fab inputs (mock today) |
 
 ---
 
@@ -222,9 +222,10 @@ RECOMMEND  : HOLD affected lots — do not ship pending re-measure
 
 | File | Schema | Use |
 | --- | --- | --- |
-| `visualizer/public/analyses/<id>.json` | `Analysis` in `visualizer/src/lib/analysis.ts` | UI replay |
-| `visualizer/public/analyses/index.json` | `AnalysisSummary[]` | History selector |
-| `visualizer/public/analyses/<id>.feedback.json` | `AnalysisFeedback` | Good/bad + auto-eval |
+| `visualizer/public/analyses/<id>.json` | `Analysis` in `visualizer/src/lib/analysis.ts` | UI replay (gitignored runtime output) |
+| `foundry-brain/fixtures/analyses/` | Committed demo seed | `npm run seed-analyses` |
+| `visualizer/public/analyses/index.json` | `AnalysisSummary[]` | History selector (gitignored) |
+| `visualizer/public/analyses/<id>.feedback.json` | `AnalysisFeedback` | Good/bad + auto-eval (gitignored) |
 | gbrain `foundry-excursions/<id>` | Markdown + frontmatter | Next-run retrieval |
 
 ---
@@ -233,17 +234,19 @@ RECOMMEND  : HOLD affected lots — do not ship pending re-measure
 
 ```
 foundry-brain/
-├── CLAUDE.md                          # Routing + setup hints
+├── CLAUDE.md
 ├── .claude/skills/
-│   ├── gstack/                        # Platform (54 skills, router, bins)
-│   ├── ai-yield-engineer/             # Skill #1 — AI Yield Engineer
-│   │   ├── SKILL.md                   # Playbook + gbrain instructions
-│   │   ├── data/ → excursion-diagnosis/data/
-│   │   └── bin/
-│   │       ├── foundry-gbrain-save.py
-│   │       ├── foundry-eval-analysis.py
-│   │       └── foundry-sync-feedback.py
-│   └── excursion-diagnosis/           # Deprecated → ai-yield-engineer
+│   ├── gstack/                        # GStack platform
+│   ├── foundry-brain/                 # Shared brain — data + memory bins
+│   │   ├── SKILL.md
+│   │   ├── data/                      # MES / FDC / Metrology CSVs
+│   │   ├── fixtures/analyses/         # Committed demo seed
+│   │   └── bin/                       # gbrain save, eval, feedback sync
+│   ├── ai-yield-engineer/             # Skill #1
+│   ├── hold-or-ship/                  # Future stub
+│   ├── drift-watch/                   # Future stub
+│   ├── commonality/                   # Future stub
+│   └── excursion-diagnosis/           # Deprecated redirect
 ├── visualizer/                        # Field engineer UI
 │   ├── src/app/page.tsx               # Replay orchestration
 │   ├── src/components/VerdictCard.tsx # Verdict + 👍/👎

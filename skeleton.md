@@ -23,10 +23,13 @@ Garry Tan の [gstack](https://github.com/garrytan/gstack) が「1つの Claude 
 | パス | 中身 |
 | --- | --- |
 | `.claude/skills/gstack/` | Garry Tan の gstack 実リポを同梱（54スキル + lib/bin 等）。Foundry Brain が乗る土台 |
-| `.claude/skills/<skill>` ×54 | gstack 各スキルへの**シンボリックリンク**（`→ gstack/<skill>`）。Claude Code の発見対象は `.claude/skills/*/SKILL.md` の1階層なので、gstack 公式 `setup` と同じくフラットに並べて呼べるようにしている |
-| `.claude/skills/excursion-diagnosis/` | **スキル#1**（今の故障分析）。`SKILL.md` + `data/`（3系統のモックCSV）。上記と並列 |
+| `.claude/skills/<skill>` ×54 | gstack 各スキルへの**シンボリックリンク**（`→ gstack/<skill>`） |
+| `.claude/skills/foundry-brain/` | **ブレイン** — 共通データ基盤（`data/` 3系統CSV）+ gbrain 記憶ツール（`bin/`） |
+| `.claude/skills/ai-yield-engineer/` | **スキル#1** — 故障分析・Hold推奨・UI起動 |
+| `.claude/skills/hold-or-ship/` 等 | **将来スキル**（スタブ）— 同じ `foundry-brain/data/` を参照 |
+| `.claude/skills/excursion-diagnosis/` | 旧名 → `/ai-yield-engineer` へリダイレクト |
 
-**スキル#1「Excursion Diagnosis」の挙動**: `SKILL.md` の調査手順に従って `data/` の3系統CSVを実際に query → 不良ロット特定 → 装置ルート追跡 → センサードリフト検出 → 原因確定＋Hold推奨、を段階的に実行。**その上で `visualizer/`（可視化UI）を起動**し、同じ調査をブラウザで再生する。「スキルが調査しつつ可視化UIを起動する」構成。
+**スキル#1「Excursion Diagnosis」の挙動**: `ai-yield-engineer/SKILL.md` の調査手順に従い、**`foundry-brain/data/`** の3系統CSVを query → 不良ロット特定 → 装置ルート追跡 → センサードリフト検出 → 原因確定＋Hold推奨。**その上で `visualizer/` を起動**し、同じ調査をブラウザで再生。
 
 - **ハッカソンで前面に出すのはスキル#1のみ**。他スキル（Hold-or-Ship / Drift Watch / Commonality）は強く売り込まず、「データが溜まるのでこういう使い方もできる」という**軽い展望**として最後に触れるだけ（スコープを広げない）
 
