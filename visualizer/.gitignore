@@ -39,3 +39,13 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# runtime analysis output (agent, feedback API, seed-analyses target)
+/public/analyses/*
+!/public/analyses/.gitkeep
+
+# feedback sidecars next to analysis JSON
+*.feedback.json
+
+# removed: visualizer/fixtures/ — demo seed lives in foundry-brain/fixtures/analyses/
+/fixtures/

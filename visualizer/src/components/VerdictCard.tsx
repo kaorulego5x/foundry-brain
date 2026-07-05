@@ -3,14 +3,27 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import type { Verdict } from "@/lib/analysis";
+import { CheckIcon } from "./icons";
 
 interface Props {
   visible: boolean;
   verdict: Verdict;
+  analysisId?: string;
 }
 
-export default function VerdictCard({ visible, verdict }: Props) {
+export default function VerdictCard({ visible, verdict, analysisId }: Props) {
   const [showOrder, setShowOrder] = useState(false);
+  const [rated, setRated] = useState<string | null>(null);
+
+  async function submitRating(rating: "good" | "bad") {
+    if (!analysisId || rated) return;
+    setRated(rating);
+    await fetch("/api/feedback", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ analysisId, rating }),
+    }).catch(() => {});
+  }
 
   if (!visible) return null;
 
@@ -45,11 +58,40 @@ export default function VerdictCard({ visible, verdict }: Props) {
         <button
           onClick={() => setShowOrder(true)}
           disabled={showOrder}
-          className="ml-auto rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-red-500 disabled:bg-slate-200 disabled:text-slate-400"
+          className="ml-auto flex items-center gap-1.5 rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-red-500 disabled:bg-slate-200 disabled:text-slate-400"
         >
-          {showOrder ? "Order generated ✓" : "Generate isolation order"}
+          {showOrder ? (
+            <>
+              Order generated
+              <CheckIcon className="h-3.5 w-3.5" />
+            </>
+          ) : (
+            "Generate isolation order"
+          )}
         </button>
       </div>
+
+      {analysisId && visible && (
+        <div className="mt-3 flex items-center gap-2 border-t border-slate-100 pt-3">
+          <span className="text-xs text-slate-500">Rate this analysis:</span>
+          <button
+            type="button"
+            disabled={!!rated}
+            onClick={() => submitRating("good")}
+            className="rounded-md border border-green-200 bg-green-50 px-3 py-1 text-sm text-green-800 disabled:opacity-50"
+          >
+            {rated === "good" ? "Good ✓" : "👍 Good"}
+          </button>
+          <button
+            type="button"
+            disabled={!!rated}
+            onClick={() => submitRating("bad")}
+            className="rounded-md border border-red-200 bg-red-50 px-3 py-1 text-sm text-red-800 disabled:opacity-50"
+          >
+            {rated === "bad" ? "Bad ✓" : "👎 Bad"}
+          </button>
+        </div>
+      )}
 
       {showOrder && (
         <motion.div

@@ -556,6 +556,8 @@ Use the Skill tool to invoke it. The skill has specialized workflows, checklists
 quality gates that produce better results than answering inline.
 
 **Routing rules — when you see these patterns, INVOKE the skill via the Skill tool:**
+- User asks about Foundry Brain, fab brain, company brain for the fab → invoke `/foundry-brain`
+- User reports fab yield drop, yield excursion, hold-or-ship on lots, "AI yield engineer", 歩留まり異常 → invoke `/ai-yield-engineer`
 - User describes a new idea, asks "is this worth building", brainstorms, pitches a concept → invoke `/office-hours`
 - User asks to spec something out, file an issue, write up a ticket, "turn this into a GitHub issue", "backlog item" → invoke `/spec`
 - User asks about strategy, scope, ambition, "think bigger", "what should we build" → invoke `/plan-ceo-review`

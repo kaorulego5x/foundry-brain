@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import WaferMap from "@/components/WaferMap";
 import FabFloor from "@/components/FabFloor";
@@ -8,6 +8,16 @@ import RfChart from "@/components/RfChart";
 import VerdictCard from "@/components/VerdictCard";
 import DataTable from "@/components/DataTable";
 import PipelineOverview from "@/components/PipelineOverview";
+import {
+  FactoryIcon,
+  SensorIcon,
+  InspectIcon,
+  RestartIcon,
+  CheckIcon,
+  ExchangeIcon,
+  ChevronDownIcon,
+  PanelLeftIcon,
+} from "@/components/icons";
 import {
   loadIndex,
   loadAnalysis,
@@ -24,9 +34,9 @@ import {
 
 // The three fab systems Foundry Brain reads across — plain names, no jargon.
 const SOURCES = [
-  { id: "MES", name: "Production History", gloss: "which lot ran where & when", icon: "🏭" },
-  { id: "FDC", name: "Machine Sensors", gloss: "temp · pressure · power", icon: "📡" },
-  { id: "MET", name: "Quality Inspection", gloss: "thickness & defects", icon: "🔬" },
+  { id: "MES", name: "Production History", gloss: "which lot ran where & when", icon: FactoryIcon },
+  { id: "FDC", name: "Machine Sensors", gloss: "temp · pressure · power", icon: SensorIcon },
+  { id: "MET", name: "Quality Inspection", gloss: "thickness & defects", icon: InspectIcon },
 ] as const;
 
 type SourceId = (typeof SOURCES)[number]["id"] | "all" | null;
@@ -64,6 +74,11 @@ export default function Home() {
   const [current, setCurrent] = useState(-1);
   const [isRunning, setIsRunning] = useState(false);
   const [isComplete, setIsComplete] = useState(false);
+  // The step log is history, not chrome — collapsed by default; run() unfolds
+  // it while the replay walks through it (and it stays open afterwards).
+  const [logOpen, setLogOpen] = useState(false);
+  // The whole sidebar collapses to a slim rail, giving the canvas full width.
+  const [sidebarOpen, setSidebarOpen] = useState(true);
 
   // Load the history index once, default to the newest analysis.
   useEffect(() => {
@@ -75,26 +90,43 @@ export default function Home() {
       .catch(() => setHistory([]));
   }, []);
 
-  // Load the selected analysis record; reset the replay each time it changes.
+  // Load the selected analysis record. The investigation has already run —
+  // the page opens in the concluded state (all steps done, verdict ready);
+  // "Replay again" re-runs the walkthrough animation on demand.
   useEffect(() => {
     if (!selectedId) return;
     loadAnalysis(selectedId)
       .then((a) => {
         setAnalysis(a);
         setTab("pipeline");
-        setScene("overview");
-        setCurrent(-1);
+        setScene("verdict");
+        setCurrent(a.steps.length - 1);
         setIsRunning(false);
-        setIsComplete(false);
+        setIsComplete(true);
       })
       .catch(() => setAnalysis(null));
   }, [selectedId]);
 
   const steps = analysis?.steps ?? [];
 
+  // After a replay lands, bring the verdict (top of the canvas) into view.
+  // Skip the initial mount — the page already opens on the concluded state.
+  const mainRef = useRef<HTMLElement>(null);
+  const mountedRef = useRef(false);
+  useEffect(() => {
+    if (!mountedRef.current) {
+      mountedRef.current = true;
+      return;
+    }
+    if (!isComplete) return;
+    const t = setTimeout(() => mainRef.current?.scrollTo({ top: 0, behavior: "smooth" }), 600);
+    return () => clearTimeout(t);
+  }, [isComplete]);
+
   const run = useCallback(async () => {
     if (isRunning || !analysis) return;
     setTab("investigation");
+    setLogOpen(true);
     setIsRunning(true);
     setIsComplete(false);
     setCurrent(-1);
@@ -109,13 +141,6 @@ export default function Home() {
     setIsComplete(true);
     setIsRunning(false);
   }, [isRunning, analysis]);
-
-  const reset = useCallback(() => {
-    setIsRunning(false);
-    setIsComplete(false);
-    setCurrent(-1);
-    setScene("overview");
-  }, []);
 
   if (!analysis) {
     return (
@@ -162,7 +187,51 @@ export default function Home() {
 
       <div className="flex min-h-0 flex-1">
         {/* narration / control */}
-        <aside className="flex w-[380px] shrink-0 flex-col border-r border-slate-200 bg-white p-5">
+        <aside
+          className={`flex shrink-0 flex-col border-r border-slate-200 bg-white transition-all duration-300 ${
+            sidebarOpen ? "w-[300px] p-5 lg:w-[380px]" : "w-14 items-center px-2 py-4"
+          }`}
+        >
+          {!sidebarOpen && (
+            <div className="flex flex-col items-center gap-4">
+              <button
+                type="button"
+                onClick={() => setSidebarOpen(true)}
+                title="Open sidebar"
+                className="rounded-lg p-2 text-slate-400 transition hover:bg-slate-100 hover:text-slate-600"
+              >
+                <PanelLeftIcon className="h-4 w-4" />
+              </button>
+              <span
+                title={`Yield alert ${yd}%`}
+                className="h-2.5 w-2.5 animate-pulse rounded-full bg-red-500"
+              />
+              <button
+                type="button"
+                onClick={run}
+                disabled={isRunning}
+                title="Replay investigation"
+                className="rounded-lg p-2 text-slate-400 transition hover:bg-slate-100 hover:text-slate-600 disabled:opacity-40"
+              >
+                <RestartIcon className="h-4 w-4" />
+              </button>
+            </div>
+          )}
+          {sidebarOpen && (
+            <>
+          <div className="mb-3 flex items-center justify-between">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+              AI yield engineer
+            </span>
+            <button
+              type="button"
+              onClick={() => setSidebarOpen(false)}
+              title="Collapse sidebar"
+              className="rounded-lg p-1.5 text-slate-400 transition hover:bg-slate-100 hover:text-slate-600"
+            >
+              <PanelLeftIcon className="h-4 w-4" />
+            </button>
+          </div>
           <div className="mb-5 rounded-xl border border-red-200 bg-red-50 p-4">
             <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-red-600">
               <span className="inline-block h-2 w-2 animate-pulse rounded-full bg-red-500" />
@@ -180,42 +249,86 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="flex-1 space-y-2 overflow-y-auto">
-            {steps.map((s, i) => {
-              const state =
-                current > i || (isComplete && current >= i) ? "done" : current === i ? "active" : "idle";
-              return <StepRow key={s.n} step={s} state={state} />;
-            })}
+          <div className="min-h-0 flex-1 overflow-y-auto">
+            <button
+              type="button"
+              onClick={() => setLogOpen((v) => !v)}
+              className="flex w-full items-center gap-2 rounded-xl border border-slate-200 bg-white p-3 text-left transition hover:border-indigo-200 hover:bg-indigo-50/40"
+            >
+              <span className="text-sm font-semibold text-slate-800">Investigation log</span>
+              <span
+                className={`flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide ${
+                  isRunning ? "bg-indigo-100 text-indigo-600" : "bg-emerald-100 text-emerald-700"
+                }`}
+              >
+                {isRunning ? (
+                  <>
+                    <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-indigo-500" />
+                    step {Math.max(current + 1, 1)}/{steps.length}
+                  </>
+                ) : (
+                  <>
+                    <CheckIcon className="h-2.5 w-2.5" />
+                    {steps.length} steps
+                  </>
+                )}
+              </span>
+              <motion.span
+                initial={false}
+                animate={{ rotate: logOpen ? 180 : 0 }}
+                className="ml-auto text-slate-400"
+              >
+                <ChevronDownIcon className="h-4 w-4" />
+              </motion.span>
+            </button>
+
+            <AnimatePresence initial={false}>
+              {logOpen && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: "auto" }}
+                  exit={{ opacity: 0, height: 0 }}
+                  transition={{ duration: 0.25 }}
+                  className="overflow-hidden"
+                >
+                  <div className="mt-2 space-y-2">
+                    {steps.map((s, i) => {
+                      const state =
+                        current > i || (isComplete && current >= i)
+                          ? "done"
+                          : current === i
+                          ? "active"
+                          : "idle";
+                      return <StepRow key={s.n} step={s} state={state} />;
+                    })}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
 
           <div className="mt-4 border-t border-slate-100 pt-4">
-            {!isRunning && !isComplete && (
-              <button
-                onClick={run}
-                className="w-full rounded-lg bg-indigo-600 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-500"
-              >
-                ▶ Replay investigation
-              </button>
-            )}
-            {isRunning && (
+            {isRunning ? (
               <div className="flex items-center justify-center gap-2 py-2.5 text-sm font-medium text-indigo-600">
                 <span className="h-2 w-2 animate-ping rounded-full bg-indigo-500" />
                 Replaying…
               </div>
-            )}
-            {isComplete && (
+            ) : (
               <button
-                onClick={reset}
-                className="w-full rounded-lg border border-slate-200 py-2.5 text-sm font-semibold text-slate-600 transition hover:bg-slate-50"
+                onClick={run}
+                className="flex w-full items-center justify-center gap-2 rounded-lg border border-slate-200 py-2.5 text-sm font-semibold text-slate-600 transition hover:bg-slate-50"
               >
-                ↺ Replay again
+                <RestartIcon className="h-3.5 w-3.5" />
+                Replay again
               </button>
             )}
           </div>
+            </>
+          )}
         </aside>
 
         {/* canvas */}
-        <main className="flex min-h-0 flex-1 flex-col overflow-y-auto">
+        <main ref={mainRef} className="flex min-h-0 flex-1 flex-col overflow-y-auto">
           {/* tabs */}
           <div className="flex shrink-0 border-b border-slate-200 bg-white px-6 pt-3">
             {(["pipeline", "investigation", "data"] as Tab[]).map((t) => (
@@ -248,7 +361,13 @@ export default function Home() {
                   transition={{ duration: 0.3 }}
                   className="flex flex-1 flex-col"
                 >
-                  <PipelineOverview mes={analysis.tables.mes} />
+                  {/* The conclusion is what the user came for — it leads. */}
+                  {isComplete && (
+                    <div className="mb-6">
+                      <VerdictCard visible={isComplete} verdict={analysis.verdict} analysisId={selectedId ?? undefined} />
+                    </div>
+                  )}
+                  <PipelineOverview mes={analysis.tables.mes} failingLots={analysis.failingLots} />
                 </motion.div>
               )}
               {tab === "data" && (
@@ -273,12 +392,12 @@ export default function Home() {
                   className="flex flex-1 flex-col"
                 >
                   <SourceRail active={activeSource(scene)} />
-                  <SceneView scene={scene} analysis={analysis} />
                   {isComplete && (
-                    <div className="mt-5">
+                    <div className="mb-5">
                       <VerdictCard visible={isComplete} verdict={analysis.verdict} />
                     </div>
                   )}
+                  <SceneView scene={scene} analysis={analysis} />
                 </motion.div>
               )}
             </AnimatePresence>
@@ -298,7 +417,15 @@ interface StepT {
   detail: string;
 }
 
+const SOURCE_ICON: Record<string, React.ComponentType<{ className?: string }>> = {
+  "Quality Inspection": InspectIcon,
+  "Production History": FactoryIcon,
+  "Machine Sensors": SensorIcon,
+  Correlation: ExchangeIcon,
+};
+
 function StepRow({ step, state }: { step: StepT; state: "idle" | "active" | "done" }) {
+  const SourceIcon = SOURCE_ICON[step.source] ?? ExchangeIcon;
   return (
     <div
       className={`rounded-xl border p-3 transition-colors ${
@@ -319,12 +446,22 @@ function StepRow({ step, state }: { step: StepT; state: "idle" | "active" | "don
               : "bg-slate-200 text-slate-500"
           }`}
         >
-          {state === "done" ? "✓" : step.n}
+          {state === "done" ? <CheckIcon className="h-2.5 w-2.5" /> : step.n}
         </span>
         <span className={`text-sm font-semibold ${state === "idle" ? "text-slate-400" : "text-slate-800"}`}>
           {step.title}
         </span>
-        <span className="ml-auto font-mono text-[10px] text-slate-400">{step.source}</span>
+      </div>
+      {/* which system this step queried — sits under the title, next to the rail's vocabulary */}
+      <div className="mt-1.5 pl-7">
+        <span
+          className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-medium ${
+            state === "active" ? "bg-indigo-100 text-indigo-600" : "bg-slate-100 text-slate-500"
+          }`}
+        >
+          <SourceIcon className="h-3 w-3" />
+          {step.source}
+        </span>
       </div>
       {state !== "idle" && (
         <motion.p
@@ -352,21 +489,23 @@ function SourceRail({ active }: { active: SourceId }) {
         </div>
       </div>
 
-      <div className="text-slate-300">⇄</div>
+      <ExchangeIcon className="h-4 w-4 shrink-0 text-slate-300" />
 
       <div className="flex flex-1 gap-2">
         {SOURCES.map((s) => {
           const on = active === s.id || active === "all";
+          const Icon = s.icon;
           return (
             <motion.div
               key={s.id}
+              initial={false}
               animate={{
                 borderColor: on ? "#6366f1" : "#e2e8f0",
                 backgroundColor: on ? "rgba(99,102,241,0.06)" : "rgba(255,255,255,0)",
               }}
               className="flex flex-1 items-center gap-2 rounded-xl border px-3 py-2"
             >
-              <span className="text-lg">{s.icon}</span>
+              <Icon className={`h-5 w-5 shrink-0 ${on ? "text-indigo-600" : "text-slate-400"}`} />
               <div className="leading-tight">
                 <div className={`text-sm font-semibold ${on ? "text-indigo-700" : "text-slate-700"}`}>{s.name}</div>
                 <div className="text-[10px] text-slate-400">{s.gloss}</div>
@@ -470,7 +609,7 @@ function SceneView({ scene, analysis }: { scene: Scene; analysis: Analysis }) {
 function RawDataView({ tables }: { tables: Analysis["tables"] }) {
   const silos = [
     {
-      icon: "🏭",
+      icon: FactoryIcon,
       name: "Production History",
       desc: "Which lot ran on which machine & chamber, and when",
       keyCols: "identified by: lot number",
@@ -478,7 +617,7 @@ function RawDataView({ tables }: { tables: Analysis["tables"] }) {
       tone: "border-violet-200",
     },
     {
-      icon: "📡",
+      icon: SensorIcon,
       name: "Machine Sensors",
       desc: "Temperature, pressure & power from every machine, over time",
       keyCols: "identified by: machine + chamber + timestamp",
@@ -486,7 +625,7 @@ function RawDataView({ tables }: { tables: Analysis["tables"] }) {
       tone: "border-amber-200",
     },
     {
-      icon: "🔬",
+      icon: InspectIcon,
       name: "Quality Inspection",
       desc: "Film thickness & defect measurements per lot",
       keyCols: "identified by: lot number + wafer",
@@ -502,11 +641,13 @@ function RawDataView({ tables }: { tables: Analysis["tables"] }) {
           3 separate systems — each identifies its records differently, so they don&apos;t line up on their own
         </p>
       </div>
-      <div className="grid grid-cols-3 gap-4">
-        {silos.map((s) => (
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+        {silos.map((s) => {
+          const Icon = s.icon;
+          return (
           <div key={s.name} className={`rounded-2xl border ${s.tone} bg-white p-4 shadow-sm`}>
             <div className="mb-0.5 flex items-center gap-1.5 text-sm font-bold text-slate-800">
-              <span>{s.icon}</span>
+              <Icon className="h-4 w-4 text-slate-500" />
               {s.name}
             </div>
             <div className="text-xs text-slate-400">{s.desc}</div>
@@ -518,7 +659,8 @@ function RawDataView({ tables }: { tables: Analysis["tables"] }) {
               scanning={false}
             />
           </div>
-        ))}
+          );
+        })}
       </div>
     </>
   );
@@ -674,7 +816,10 @@ function SensorScene({ fdc, rf }: { fdc: Table; rf: RfData }) {
 function VerdictScene({ fab, rootCause }: { fab: FabFloorData; rootCause: string }) {
   return (
     <>
-      <SceneTitle kicker="Step 4 · Correlation" title={`Root cause locked: ${rootCause}`} />
+      <SceneTitle
+        kicker="Step 4 · Correlation"
+        title={`Evidence: every failing lot converges on ${rootCause}`}
+      />
       <div className="flex-1 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
         <FabFloor mode="verdict" data={fab} />
       </div>
