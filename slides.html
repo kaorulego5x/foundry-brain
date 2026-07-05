@@ -454,6 +454,48 @@
         margin-top: 6px;
         line-height: 1.35;
       }
+      .dcard .tabtag {
+        font-size: 13px;
+        font-weight: 800;
+        letter-spacing: 0.5px;
+        color: var(--text3);
+        margin-top: 12px;
+      }
+      .minitab {
+        margin-top: 6px;
+        width: 100%;
+        border-collapse: collapse;
+        font-family: ui-monospace, "SF Mono", monospace;
+        font-size: 13px;
+        background: var(--white);
+        border-radius: 8px;
+        overflow: hidden;
+        border: 1px solid var(--border);
+      }
+      .minitab th {
+        background: var(--border);
+        color: var(--text2);
+        font-weight: 700;
+        padding: 5px 8px;
+        text-align: left;
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+      }
+      .minitab td {
+        border-top: 1px solid var(--border);
+        padding: 5px 8px;
+        color: var(--text2);
+        white-space: nowrap;
+      }
+      .minitab td.bad {
+        color: var(--red);
+        font-weight: 700;
+      }
+      .minitab td.ok {
+        color: var(--green);
+        font-weight: 700;
+      }
 
       /* ═══ Agent flow ═══ */
       .agent-flow {
@@ -895,6 +937,233 @@
         font-weight: 800;
       }
 
+      /* ═══ System architecture diagram ═══ */
+      .hotl-banner {
+        align-self: flex-start;
+        background: var(--green);
+        color: #fff;
+        font-weight: 800;
+        font-size: 20px;
+        padding: 8px 20px;
+        border-radius: 999px;
+        margin-top: 14px;
+        letter-spacing: 0.4px;
+      }
+      .arch {
+        display: flex;
+        align-items: center;
+        gap: 26px;
+        margin-top: 28px;
+      }
+      .conn .line.solo {
+        height: 46px;
+      }
+      .arch-eng {
+        flex-shrink: 0;
+        text-align: center;
+        background: var(--card);
+        border-radius: 18px;
+        padding: 26px 20px;
+        width: 190px;
+        position: relative;
+      }
+      .arch-eng .hotl {
+        position: absolute;
+        top: -13px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: var(--green);
+        color: #fff;
+        font-size: 13px;
+        font-weight: 800;
+        padding: 4px 12px;
+        border-radius: 999px;
+        letter-spacing: 0.6px;
+        white-space: nowrap;
+      }
+      .arch-eng .hotl-sub {
+        font-size: 13px;
+        color: var(--text3);
+        margin-top: 6px;
+        font-weight: 600;
+      }
+      .arch-eng .ico {
+        font-size: 60px;
+      }
+      .arch-eng h3 {
+        font-size: 22px;
+        font-weight: 800;
+        margin-top: 6px;
+      }
+      .arch-eng p {
+        font-size: 15px;
+        color: var(--text2);
+        margin-top: 2px;
+      }
+      .arch-link {
+        flex-shrink: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        color: var(--text3);
+        font-weight: 700;
+      }
+      .arch-link .a {
+        font-size: 40px;
+        line-height: 1;
+      }
+      .arch-link .t {
+        font-size: 14px;
+        margin-top: 4px;
+      }
+      .fb {
+        flex: 1;
+        border: 3px solid var(--blue);
+        border-radius: 22px;
+        padding: 36px 26px 28px;
+        position: relative;
+      }
+      .fb-label {
+        position: absolute;
+        top: -17px;
+        left: 28px;
+        background: var(--blue);
+        color: #fff;
+        font-weight: 800;
+        font-size: 18px;
+        padding: 6px 18px;
+        border-radius: 999px;
+        letter-spacing: 0.4px;
+      }
+      .cc {
+        border: 2px dashed var(--text3);
+        border-radius: 16px;
+        padding: 28px 16px 18px;
+        position: relative;
+      }
+      .cc-label {
+        position: absolute;
+        top: -13px;
+        left: 20px;
+        background: var(--white);
+        color: var(--text2);
+        font-weight: 800;
+        font-size: 16px;
+        padding: 2px 12px;
+      }
+      .arch-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 16px;
+      }
+      .chip {
+        background: var(--card);
+        border-radius: 12px;
+        padding: 16px 10px;
+        text-align: center;
+        font-size: 19px;
+        font-weight: 700;
+        color: var(--text);
+      }
+      .chip.blue {
+        background: rgba(0, 102, 204, 0.1);
+        color: var(--blue);
+      }
+      .conn-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 16px;
+      }
+      .conn {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      .conn .line {
+        width: 3px;
+        height: 26px;
+        background: var(--blue);
+      }
+      .conn .cap {
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--blue);
+        margin: 2px 0;
+      }
+      .store {
+        background: #fff;
+        border: 2px solid var(--border);
+        border-radius: 12px;
+        padding: 15px 12px;
+        text-align: center;
+      }
+      .store h4 {
+        font-size: 19px;
+        font-weight: 800;
+      }
+      .store p {
+        font-size: 14px;
+        color: var(--text2);
+        margin-top: 2px;
+      }
+
+      /* ═══ Self-improvement loop ═══ */
+      .af-step.brain {
+        background: rgba(36, 138, 61, 0.1);
+        border: 1.5px solid rgba(36, 138, 61, 0.3);
+      }
+      .af-step.brain h3 {
+        color: var(--green);
+      }
+      .verdict-pills {
+        display: flex;
+        gap: 8px;
+        justify-content: center;
+        margin-top: 12px;
+      }
+      .vp {
+        font-size: 14px;
+        font-weight: 800;
+        padding: 5px 12px;
+        border-radius: 999px;
+      }
+      .vp.good {
+        background: rgba(36, 138, 61, 0.14);
+        color: var(--green);
+      }
+      .vp.bad {
+        background: rgba(215, 0, 21, 0.1);
+        color: var(--red);
+      }
+      .loop-back {
+        margin-top: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        background: rgba(36, 138, 61, 0.07);
+        border-radius: 14px;
+        padding: 16px 24px;
+      }
+      .loop-back .ico {
+        font-size: 30px;
+        flex-shrink: 0;
+      }
+      .loop-back p {
+        font-size: 21px;
+        color: var(--text2);
+        font-weight: 600;
+      }
+      .loop-back p b {
+        color: var(--green);
+      }
+      .loop-discard {
+        text-align: center;
+        font-size: 16px;
+        color: var(--text3);
+        margin-top: 10px;
+      }
+
       /* ═══ Market outlook ═══ */
       .mkt {
         display: grid;
@@ -980,7 +1249,10 @@
         <div class="pcard">
           <div class="ico">🎯</div>
           <h3>Sharpened on yield</h3>
-          <p>Yield is the factory's most critical metric &mdash; so it's our first, deepest skill.</p>
+          <p>
+            Yield is the factory's most critical metric &mdash; so it's our
+            first, deepest skill.
+          </p>
         </div>
         <div class="pcard">
           <div class="ico">🔁</div>
@@ -1012,8 +1284,8 @@
     <!-- 4 · Center pin statement -->
     <div class="slide s-statement">
       <h2>
-        <span class="hl">Yield analysis</span> is the center pin of the
-        semiconductor factory OS &mdash; yet it still depends on a few
+        <span class="hl">Yield analysis</span> is the chokepoint of the
+        semiconductor foundry &mdash; it depends on a few
         <span class="rd">slow, scarce artisans.</span>
       </h2>
     </div>
@@ -1145,24 +1417,40 @@
 
     <!-- 6 · Yield engineer — the data -->
     <div class="slide">
-      <h2>
-        To do it, they cross three systems, by hand.
-      </h2>
+      <h2>To do it, they cross 3 systems, by hand.</h2>
       <div class="dgrid">
         <div class="dcard">
           <div class="ico">📡</div>
           <div class="angle">What the machine did</div>
           <h3>Sensor Data</h3>
+          <div class="tabtag">🗄️ TABLE</div>
+          <table class="minitab">
+            <tr><th>time</th><th>machine</th><th>kW</th></tr>
+            <tr><td>11:00</td><td>Etch-3</td><td class="bad">2.31</td></tr>
+            <tr><td>13:00</td><td>Etch-3</td><td>2.12</td></tr>
+          </table>
         </div>
         <div class="dcard">
           <div class="ico">🏭</div>
           <div class="angle">Where the wafer went</div>
           <h3>Production History</h3>
+          <div class="tabtag">🗄️ TABLE</div>
+          <table class="minitab">
+            <tr><th>lot</th><th>machine</th></tr>
+            <tr><td>L-0704</td><td>Etch-3 / C</td></tr>
+            <tr><td>L-0708</td><td>Etch-3 / C</td></tr>
+          </table>
         </div>
         <div class="dcard">
           <div class="ico">🔬</div>
           <div class="angle">How it turned out</div>
           <h3>Inspection Results</h3>
+          <div class="tabtag">🗄️ TABLE</div>
+          <table class="minitab">
+            <tr><th>lot</th><th>nm</th><th>result</th></tr>
+            <tr><td>L-0704</td><td>44.8</td><td class="bad">✗ fail</td></tr>
+            <tr><td>L-0701</td><td>48.3</td><td class="ok">✓ pass</td></tr>
+          </table>
         </div>
       </div>
       <div class="stall">
@@ -1178,7 +1466,14 @@
         <iframe
           src="https://www.youtube.com/embed/J_I4sp7AZ-c?start=63"
           title="Yield engineering"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allow="
+            accelerometer;
+            autoplay;
+            clipboard-write;
+            encrypted-media;
+            gyroscope;
+            picture-in-picture;
+          "
           allowfullscreen
         ></iframe>
       </div>
@@ -1209,17 +1504,23 @@
 
     <!-- 7 · Features -->
     <div class="slide">
-      <h2>Features: <span class="sub">the AI runs the whole yield analysis.</span></h2>
+      <h2>
+        Features: <span class="sub">the AI runs the whole yield analysis.</span>
+      </h2>
       <div class="feeds">
         <div class="af-dbs">
           <div class="af-db">📡 Sensor Data</div>
           <div class="af-db">🏭 Production History</div>
           <div class="af-db">🔬 Inspection Results</div>
         </div>
-        <div class="note">reads all three systems, automatically &nbsp;&darr;</div>
+        <div class="note">
+          reads all three systems, automatically &nbsp;&darr;
+        </div>
       </div>
       <div class="ai-panel">
-        <span class="ai-tab">🤖 Foundry Brain &middot; every step, done by AI</span>
+        <span class="ai-tab"
+          >🤖 Foundry Brain &middot; every step, done by AI</span
+        >
         <div class="agent-flow">
           <div class="af-step ai">
             <div class="ico">🚨</div>
@@ -1328,19 +1629,85 @@
       </div>
     </div>
 
-    <!-- System architecture (placeholder) -->
+    <!-- System architecture -->
     <div class="slide">
       <h2>System architecture</h2>
-      <div class="ph">
-        <div class="ico">🧩</div>
-        <div class="t">System architecture diagram</div>
-        <div class="s">
-          Agent, data connectors &amp; the three systems &mdash; diagram to come
+      <div class="hotl-banner">🧑‍🔧 HOTL &mdash; Human on the Loop</div>
+      <div class="arch">
+        <div class="arch-eng">
+          <div class="ico">🧑‍🔧</div>
+          <h3>Yield Engineer</h3>
+          <p>ask &amp; review</p>
+        </div>
+        <div class="arch-link">
+          <div class="a">&harr;</div>
+        </div>
+        <div class="fb">
+          <span class="fb-label">Foundry Brain</span>
+          <div class="cc">
+            <span class="cc-label">Claude Code</span>
+            <div class="arch-grid">
+              <div class="chip blue">🎯 Fault Analysis</div>
+              <div class="chip">🧱 G-Stack</div>
+              <div class="chip blue">🧠 G-Brain</div>
+            </div>
+          </div>
+          <div class="conn-row">
+            <div class="conn"><div class="line solo"></div></div>
+            <div></div>
+            <div class="conn"><div class="line solo"></div></div>
+          </div>
+          <div class="arch-grid">
+            <div class="store">
+              <h4>🗄️ SQL Data</h4>
+              <p>Sensors · Production · Inspection</p>
+            </div>
+            <div></div>
+            <div class="store">
+              <h4>🔎 Vector DB</h4>
+              <p>Past analyses</p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- 11 · Market outlook — the ceiling is the sky -->
+    <!-- Self-improvement loop -->
+    <div class="slide">
+      <h2>
+        Every good diagnosis
+        <span class="sub">makes the next one sharper.</span>
+      </h2>
+      <div class="agent-flow">
+        <div class="af-step">
+          <div class="ico">🎯</div>
+          <h3>Diagnose</h3>
+        </div>
+        <div class="af-arr">&rarr;</div>
+        <div class="af-step hl">
+          <div class="ico">🧑‍🔬</div>
+          <h3>Engineer rates</h3>
+          <div class="verdict-pills">
+            <span class="vp good">👍 Good</span>
+            <span class="vp bad">👎 Bad</span>
+          </div>
+        </div>
+        <div class="af-arr">&rarr;</div>
+        <div class="af-step brain">
+          <div class="ico">🧠</div>
+          <h3>Save to memory</h3>
+        </div>
+      </div>
+      <div class="loop-back">
+        <div class="ico">&#8635;</div>
+        <p>
+          Only <b>good</b> ones are saved &mdash; so the
+          <b>next investigation starts smarter.</b>
+        </p>
+      </div>
+    </div>
+
+    <!-- Market outlook — the ceiling is the sky -->
     <div class="slide">
       <h2>No ceiling. <span class="sub">The market only grows.</span></h2>
       <div class="mkt">
@@ -1377,7 +1744,7 @@
     </div>
 
     <div class="nav" id="nav"></div>
-    <div class="sn" id="sn">1 / 17</div>
+    <div class="sn" id="sn">1 / 18</div>
     <script>
       const ss = document.querySelectorAll(".slide"),
         nav = document.getElementById("nav"),

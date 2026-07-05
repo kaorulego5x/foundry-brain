@@ -1,0 +1,1027 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Foundry Brain — Short</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap");
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      :root {
+        --white: #fff;
+        --card: #f2f2f7;
+        --border: #d1d1d6;
+        --text: #000;
+        --text2: #3a3a3c;
+        --text3: #8e8e93;
+        --blue: #0066cc;
+        --red: #d70015;
+        --green: #248a3d;
+        --amber: #b25000;
+      }
+      html,
+      body {
+        height: 100%;
+        font-family: "Inter", system-ui, sans-serif;
+        background: var(--white);
+        color: var(--text);
+        overflow: hidden;
+        -webkit-font-smoothing: antialiased;
+      }
+      .slide {
+        position: absolute;
+        inset: 0;
+        display: none;
+        flex-direction: column;
+        justify-content: center;
+        padding: 52px 76px;
+        opacity: 0;
+        transition: opacity 0.3s;
+      }
+      .slide.active {
+        display: flex;
+        opacity: 1;
+      }
+      .label {
+        font-size: 24px;
+        font-weight: 600;
+        color: var(--blue);
+        margin-bottom: 10px;
+      }
+      h2 {
+        font-size: 62px;
+        font-weight: 800;
+        letter-spacing: -2.5px;
+        line-height: 1.08;
+      }
+      h2 .sub {
+        color: var(--text3);
+      }
+      .lead {
+        font-size: 26px;
+        color: var(--text2);
+        margin-top: 16px;
+        line-height: 1.45;
+        max-width: 1050px;
+      }
+      .lead b {
+        color: var(--text);
+        font-weight: 700;
+      }
+
+      /* ═══ Title / Close ═══ */
+      .s-title,
+      .s-close {
+        align-items: center;
+        text-align: center;
+        background: var(--text);
+        color: var(--white);
+      }
+      .s-title h1,
+      .s-close h1 {
+        font-size: 116px;
+        font-weight: 900;
+        letter-spacing: -5px;
+      }
+      .s-title .tag {
+        font-size: 32px;
+        font-weight: 400;
+        color: rgba(255, 255, 255, 0.85);
+        margin-top: 18px;
+        line-height: 1.35;
+        max-width: 940px;
+      }
+      .s-title .tag em {
+        font-style: normal;
+        color: #fff;
+        font-weight: 700;
+      }
+      .s-close .q {
+        font-size: 44px;
+        font-weight: 700;
+        line-height: 1.32;
+        letter-spacing: -1.5px;
+        max-width: 1000px;
+        margin-bottom: 40px;
+      }
+      .s-close .q strong {
+        color: #4da3ff;
+      }
+      .s-title .meta,
+      .s-close .meta {
+        font-size: 18px;
+        color: rgba(255, 255, 255, 0.35);
+        margin-top: 48px;
+      }
+
+      /* ═══ Before / After panels ═══ */
+      .ba {
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
+        margin-top: 32px;
+        align-items: stretch;
+      }
+      .ba-side {
+        border-radius: 18px;
+        padding: 40px 36px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+      .ba-side.after {
+        background: rgba(36, 138, 61, 0.06);
+      }
+      .ba-side.before {
+        background: rgba(215, 0, 21, 0.05);
+      }
+      .ba-side .k {
+        font-size: 20px;
+        font-weight: 800;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+      }
+      .ba-side.after .k {
+        color: var(--green);
+      }
+      .ba-side.before .k {
+        color: var(--red);
+      }
+      .ba-side h3 {
+        font-size: 46px;
+        font-weight: 800;
+        letter-spacing: -1px;
+        margin-top: 8px;
+        line-height: 1.1;
+      }
+      .ba-side p {
+        font-size: 22px;
+        color: var(--text2);
+        margin-top: 12px;
+        line-height: 1.4;
+      }
+      .ba-arrow {
+        font-size: 56px;
+        color: var(--text3);
+        display: flex;
+        align-items: center;
+        padding: 0 28px;
+      }
+      .stall {
+        margin-top: 30px;
+        font-size: 28px;
+        font-weight: 700;
+        color: var(--text2);
+        text-align: center;
+      }
+      .stall b {
+        color: var(--text);
+        font-weight: 800;
+      }
+      .stall b.rd {
+        color: var(--red);
+      }
+      .stall b.gr {
+        color: var(--green);
+      }
+
+      /* ═══ 3 data cards ═══ */
+      .dgrid {
+        display: flex;
+        gap: 18px;
+        width: 100%;
+        margin-top: 28px;
+      }
+      .dcard {
+        flex: 1;
+        background: var(--card);
+        border-radius: 18px;
+        padding: 24px;
+        display: flex;
+        flex-direction: column;
+      }
+      .dcard .ico {
+        font-size: 40px;
+        line-height: 1;
+      }
+      .dcard .angle {
+        font-size: 14px;
+        font-weight: 800;
+        letter-spacing: 0.6px;
+        text-transform: uppercase;
+        color: var(--blue);
+        margin-top: 10px;
+      }
+      .dcard h3 {
+        font-size: 27px;
+        font-weight: 800;
+        margin-top: 2px;
+      }
+      .dcard .tabtag {
+        font-size: 13px;
+        font-weight: 800;
+        letter-spacing: 0.5px;
+        color: var(--text3);
+        margin-top: 12px;
+      }
+      .minitab {
+        margin-top: 6px;
+        width: 100%;
+        border-collapse: collapse;
+        font-family: ui-monospace, "SF Mono", monospace;
+        font-size: 13px;
+        background: var(--white);
+        border-radius: 8px;
+        overflow: hidden;
+        border: 1px solid var(--border);
+      }
+      .minitab th {
+        background: var(--border);
+        color: var(--text2);
+        font-weight: 700;
+        padding: 5px 8px;
+        text-align: left;
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+      }
+      .minitab td {
+        border-top: 1px solid var(--border);
+        padding: 5px 8px;
+        color: var(--text2);
+        white-space: nowrap;
+      }
+      .minitab td.bad {
+        color: var(--red);
+        font-weight: 700;
+      }
+      .minitab td.ok {
+        color: var(--green);
+        font-weight: 700;
+      }
+
+      /* ═══ Agent flow ═══ */
+      .feeds {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-top: 24px;
+      }
+      .af-dbs {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+      }
+      .af-db {
+        background: var(--card);
+        border-radius: 12px;
+        padding: 14px 26px;
+        font-size: 20px;
+        font-weight: 600;
+        color: var(--text2);
+      }
+      .feeds .note {
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--blue);
+        margin-top: 10px;
+      }
+      .ai-panel {
+        margin-top: 26px;
+        border: 3px solid var(--blue);
+        border-radius: 22px;
+        padding: 28px 22px 22px;
+        position: relative;
+      }
+      .ai-panel .ai-tab {
+        position: absolute;
+        top: -18px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: var(--blue);
+        color: #fff;
+        font-size: 18px;
+        font-weight: 800;
+        padding: 7px 20px;
+        border-radius: 999px;
+        letter-spacing: 0.4px;
+        white-space: nowrap;
+      }
+      .agent-flow {
+        display: flex;
+        align-items: stretch;
+        width: 100%;
+        margin-top: 6px;
+      }
+      .af-step {
+        flex: 1;
+        text-align: center;
+        padding: 26px 12px;
+        border-radius: 14px;
+        background: var(--card);
+      }
+      .af-step.ai {
+        background: rgba(0, 102, 204, 0.08);
+        border: 1.5px solid rgba(0, 102, 204, 0.25);
+      }
+      .af-step.ai h3 {
+        color: var(--blue);
+      }
+      .af-step .ico {
+        font-size: 48px;
+        margin-bottom: 6px;
+      }
+      .af-step h3 {
+        font-size: 26px;
+        font-weight: 700;
+      }
+      .af-step p {
+        font-size: 19px;
+        color: var(--text2);
+        margin-top: 2px;
+      }
+      .af-arr {
+        display: flex;
+        align-items: center;
+        font-size: 30px;
+        color: var(--text3);
+        padding: 0 6px;
+        flex-shrink: 0;
+      }
+      .handoff {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-top: 18px;
+      }
+      .handoff .note2 {
+        font-size: 17px;
+        font-weight: 700;
+        color: var(--text3);
+        margin-bottom: 8px;
+      }
+      .human {
+        background: rgba(36, 138, 61, 0.08);
+        border: 1.5px solid rgba(36, 138, 61, 0.3);
+        border-radius: 14px;
+        padding: 13px 26px;
+        font-size: 22px;
+        color: var(--text2);
+        font-weight: 600;
+      }
+      .human b {
+        color: var(--green);
+        font-weight: 800;
+      }
+
+      /* ═══ Demo mockup ═══ */
+      .mk {
+        width: 100%;
+        border-radius: 14px;
+        overflow: hidden;
+        margin-top: 26px;
+        border: 1px solid var(--border);
+        box-shadow: 0 1px 12px rgba(0, 0, 0, 0.06);
+      }
+      .mk-bar {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        padding: 10px 18px;
+        background: var(--card);
+        border-bottom: 1px solid var(--border);
+      }
+      .mk-bar i {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        display: block;
+      }
+      .mk-bar i:nth-child(1) {
+        background: #ff5f57;
+      }
+      .mk-bar i:nth-child(2) {
+        background: #febc2e;
+      }
+      .mk-bar i:nth-child(3) {
+        background: #28c840;
+      }
+      .mk-bar span {
+        margin-left: 10px;
+        font-size: 18px;
+        color: var(--text2);
+        font-weight: 600;
+      }
+      .mk-body {
+        display: grid;
+        grid-template-columns: 240px 1fr 240px;
+        min-height: 300px;
+      }
+      .mk-p {
+        padding: 20px;
+        border-right: 1px solid var(--border);
+      }
+      .mk-p:last-child {
+        border-right: none;
+      }
+      .mk-p .pl {
+        font-size: 15px;
+        font-weight: 700;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        color: var(--text3);
+        margin-bottom: 10px;
+      }
+      .mk-input {
+        background: var(--card);
+        border-radius: 8px;
+        padding: 14px;
+        font-size: 21px;
+        color: var(--blue);
+        font-weight: 600;
+        line-height: 1.4;
+      }
+      .mk-log {
+        font-size: 17px;
+        font-family: "SF Mono", "Fira Code", monospace;
+        color: var(--text2);
+        padding: 8px 0;
+        border-bottom: 1px solid var(--card);
+        display: flex;
+        gap: 10px;
+      }
+      .mk-log .t {
+        color: var(--text3);
+        flex-shrink: 0;
+      }
+      .mk-log .a {
+        color: var(--green);
+        font-weight: 600;
+      }
+      .mk-sus {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 11px 0;
+        font-size: 20px;
+        color: var(--text2);
+        font-weight: 500;
+      }
+      .mk-sus .btr {
+        width: 90px;
+        height: 8px;
+        background: var(--card);
+        border-radius: 4px;
+        overflow: hidden;
+      }
+      .mk-sus .bf {
+        height: 100%;
+        border-radius: 4px;
+      }
+      .mk-sus .bf.h {
+        background: var(--red);
+      }
+      .mk-sus .bf.l {
+        background: var(--border);
+      }
+      .mk-sus .hit {
+        color: var(--red);
+        font-weight: 700;
+      }
+      .mk-ft {
+        grid-column: 1/-1;
+        padding: 16px 24px;
+        border-top: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: #f0fdf4;
+      }
+      .mk-ft .vl {
+        font-size: 24px;
+        color: var(--green);
+        font-weight: 700;
+      }
+      .mk-ft .vd {
+        font-size: 20px;
+        color: var(--text2);
+        margin-top: 2px;
+      }
+      .mk-ft button {
+        background: var(--text);
+        color: var(--white);
+        border: none;
+        padding: 12px 24px;
+        border-radius: 8px;
+        font-weight: 700;
+        font-size: 20px;
+        cursor: default;
+      }
+
+      /* ═══ Architecture diagram ═══ */
+      .hotl-banner {
+        align-self: flex-start;
+        background: var(--green);
+        color: #fff;
+        font-weight: 800;
+        font-size: 20px;
+        padding: 8px 20px;
+        border-radius: 999px;
+        margin-top: 14px;
+        letter-spacing: 0.4px;
+      }
+      .arch {
+        display: flex;
+        align-items: center;
+        gap: 26px;
+        margin-top: 30px;
+      }
+      .arch-eng {
+        flex-shrink: 0;
+        text-align: center;
+        background: var(--card);
+        border-radius: 18px;
+        padding: 26px 20px;
+        width: 190px;
+      }
+      .arch-eng .ico {
+        font-size: 60px;
+      }
+      .arch-eng h3 {
+        font-size: 22px;
+        font-weight: 800;
+        margin-top: 6px;
+      }
+      .arch-eng p {
+        font-size: 15px;
+        color: var(--text2);
+        margin-top: 2px;
+      }
+      .arch-link {
+        flex-shrink: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        color: var(--text3);
+        font-weight: 700;
+      }
+      .arch-link .a {
+        font-size: 40px;
+        line-height: 1;
+      }
+      .fb {
+        flex: 1;
+        border: 3px solid var(--blue);
+        border-radius: 22px;
+        padding: 36px 26px 28px;
+        position: relative;
+      }
+      .fb-label {
+        position: absolute;
+        top: -17px;
+        left: 28px;
+        background: var(--blue);
+        color: #fff;
+        font-weight: 800;
+        font-size: 18px;
+        padding: 6px 18px;
+        border-radius: 999px;
+        letter-spacing: 0.4px;
+      }
+      .cc {
+        border: 2px dashed var(--text3);
+        border-radius: 16px;
+        padding: 28px 16px 18px;
+        position: relative;
+      }
+      .cc-label {
+        position: absolute;
+        top: -13px;
+        left: 20px;
+        background: var(--white);
+        color: var(--text2);
+        font-weight: 800;
+        font-size: 16px;
+        padding: 2px 12px;
+      }
+      .arch-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 16px;
+      }
+      .chip {
+        background: var(--card);
+        border-radius: 12px;
+        padding: 16px 10px;
+        text-align: center;
+        font-size: 19px;
+        font-weight: 700;
+        color: var(--text);
+      }
+      .chip.blue {
+        background: rgba(0, 102, 204, 0.1);
+        color: var(--blue);
+      }
+      .conn-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 16px;
+      }
+      .conn {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      .conn .line.solo {
+        width: 3px;
+        height: 46px;
+        background: var(--blue);
+      }
+      .store {
+        background: #fff;
+        border: 2px solid var(--border);
+        border-radius: 12px;
+        padding: 15px 12px;
+        text-align: center;
+      }
+      .store h4 {
+        font-size: 19px;
+        font-weight: 800;
+      }
+      .store p {
+        font-size: 14px;
+        color: var(--text2);
+        margin-top: 2px;
+      }
+
+      /* ═══ Market ═══ */
+      .mkt {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 24px;
+        margin-top: 32px;
+      }
+      .mkt-bars {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      .mkt-bar {
+        background: var(--card);
+        border-radius: 14px;
+        padding: 22px 26px;
+      }
+      .mkt-bar .v {
+        font-size: 52px;
+        font-weight: 800;
+        letter-spacing: -2px;
+      }
+      .mkt-bar .v.b {
+        color: var(--blue);
+      }
+      .mkt-bar .v.g {
+        color: var(--green);
+      }
+      .mkt-bar .v.a {
+        color: var(--amber);
+      }
+      .mkt-bar .l {
+        font-size: 19px;
+        color: var(--text2);
+        margin-top: 2px;
+      }
+      .mkt-steps {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 16px;
+      }
+      .mkt-s {
+        border-left: 4px solid var(--blue);
+        padding: 6px 0 6px 22px;
+      }
+      .mkt-s h4 {
+        font-size: 27px;
+        font-weight: 700;
+      }
+
+      /* ═══ Nav ═══ */
+      .nav {
+        position: fixed;
+        bottom: 16px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        gap: 8px;
+        z-index: 10;
+      }
+      .nav-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--border);
+        border: none;
+        cursor: pointer;
+        padding: 0;
+        transition: background 0.2s;
+      }
+      .nav-dot.active {
+        background: var(--text);
+      }
+      .sn {
+        position: fixed;
+        bottom: 16px;
+        right: 40px;
+        font-size: 14px;
+        color: var(--text3);
+        z-index: 10;
+        font-weight: 500;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- 1 · Setup / Title -->
+    <div class="slide s-title active">
+      <h1>Foundry Brain</h1>
+      <div class="tag">
+        An <em>AI OS for semiconductor factories.</em><br />
+        We start with yield analysis &mdash; because yield decides whether a fab
+        is profitable.
+      </div>
+      <div class="meta">Transpose &times; Ritsumeikan University &times; OUVC</div>
+    </div>
+
+    <!-- 2 · Problem -->
+    <div class="slide">
+      <div class="label">Problem</div>
+      <h2>Fabs need 80&ndash;90% yield <span class="sub">by 2027.</span></h2>
+      <div class="ba">
+        <div class="ba-side before">
+          <div class="k">Today</div>
+          <h3>~50%</h3>
+          <p>Initial trial yield.</p>
+        </div>
+        <div class="ba-arrow">&rarr;</div>
+        <div class="ba-side after">
+          <div class="k">By 2027</div>
+          <h3>80&ndash;90%</h3>
+          <p>Needed to ship at a profit.</p>
+        </div>
+      </div>
+      <div class="stall">
+        But engineers still spend <b class="rd">days</b> finding defects across
+        <b>1,000+ steps.</b>
+      </div>
+    </div>
+
+    <!-- 3 · Pain -->
+    <div class="slide">
+      <div class="label">Pain</div>
+      <h2>One small machine problem<br /><span class="sub">damages many batches of chips.</span></h2>
+      <div class="dgrid">
+        <div class="dcard">
+          <div class="ico">📡</div>
+          <div class="angle">What the machine did</div>
+          <h3>Sensor Data</h3>
+          <div class="tabtag">🗄️ TABLE</div>
+          <table class="minitab">
+            <tr><th>time</th><th>machine</th><th>kW</th></tr>
+            <tr><td>11:00</td><td>Etch-3</td><td class="bad">2.31</td></tr>
+            <tr><td>13:00</td><td>Etch-3</td><td>2.12</td></tr>
+          </table>
+        </div>
+        <div class="dcard">
+          <div class="ico">🏭</div>
+          <div class="angle">Where the wafer went</div>
+          <h3>Production History</h3>
+          <div class="tabtag">🗄️ TABLE</div>
+          <table class="minitab">
+            <tr><th>lot</th><th>machine</th></tr>
+            <tr><td>L-0704</td><td>Etch-3 / C</td></tr>
+            <tr><td>L-0708</td><td>Etch-3 / C</td></tr>
+          </table>
+        </div>
+        <div class="dcard">
+          <div class="ico">🔬</div>
+          <div class="angle">How it turned out</div>
+          <h3>Inspection Results</h3>
+          <div class="tabtag">🗄️ TABLE</div>
+          <table class="minitab">
+            <tr><th>lot</th><th>nm</th><th>result</th></tr>
+            <tr><td>L-0704</td><td>44.8</td><td class="bad">✗ fail</td></tr>
+            <tr><td>L-0701</td><td>48.3</td><td class="ok">✓ pass</td></tr>
+          </table>
+        </div>
+      </div>
+      <div class="stall">
+        Today, engineers check all three <b class="rd">by hand.</b>
+      </div>
+    </div>
+
+    <!-- 4 · Solution -->
+    <div class="slide">
+      <div class="label">Solution</div>
+      <h2>Yield analysis: <span class="sub">days &rarr; minutes.</span></h2>
+      <div class="ba">
+        <div class="ba-side before">
+          <div class="k">Today</div>
+          <h3>One human, days</h3>
+        </div>
+        <div class="ba-arrow">&rarr;</div>
+        <div class="ba-side after">
+          <div class="k">Foundry Brain</div>
+          <h3>AI, minutes</h3>
+        </div>
+      </div>
+      <div class="stall">
+        AI <b>finds the root cause</b> and
+        <b class="gr">recommends the next action.</b>
+      </div>
+    </div>
+
+    <!-- 5 · Product Loop -->
+    <div class="slide">
+      <div class="label">Product loop</div>
+      <h2>Detect &rarr; Diagnose &rarr; Decide.</h2>
+      <div class="feeds">
+        <div class="af-dbs">
+          <div class="af-db">📡 Sensor Data</div>
+          <div class="af-db">🏭 Production History</div>
+          <div class="af-db">🔬 Inspection Results</div>
+        </div>
+        <div class="note">reads all three systems, automatically &nbsp;&darr;</div>
+      </div>
+      <div class="ai-panel">
+        <span class="ai-tab">🤖 Foundry Brain &middot; every step, done by AI</span>
+        <div class="agent-flow">
+          <div class="af-step ai"><div class="ico">🚨</div><h3>Detect</h3><p>Yield dropped</p></div>
+          <div class="af-arr">&rarr;</div>
+          <div class="af-step ai"><div class="ico">🔍</div><h3>Investigate</h3><p>Query 3 systems</p></div>
+          <div class="af-arr">&rarr;</div>
+          <div class="af-step ai"><div class="ico">🎯</div><h3>Diagnose</h3><p>Find root cause</p></div>
+          <div class="af-arr">&rarr;</div>
+          <div class="af-step ai"><div class="ico">⚡</div><h3>Recommend</h3><p>Hold or ship?</p></div>
+          <div class="af-arr">&rarr;</div>
+          <div class="af-step ai"><div class="ico">📄</div><h3>Report</h3><p>Evidence + action</p></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6 · Demo -->
+    <div class="slide">
+      <div class="label">Demo</div>
+      <h2>Yield drops <span style="color: var(--red)">12%</span>. <span class="sub">We find the culprit.</span></h2>
+      <div class="mk">
+        <div class="mk-bar"><i></i><i></i><i></i><span>Foundry Brain</span></div>
+        <div class="mk-body">
+          <div class="mk-p">
+            <div class="pl">Input</div>
+            <div class="mk-input">"Yield dropped 12%"</div>
+          </div>
+          <div class="mk-p">
+            <div class="pl">Investigation Log</div>
+            <div class="mk-log"><span class="t">00:01</span><span class="a">inspection</span> 5 lots fail spec</div>
+            <div class="mk-log"><span class="t">00:03</span><span class="a">production</span> Trace lot routing</div>
+            <div class="mk-log"><span class="t">00:08</span><span class="a">sensors</span> Power drift on Etch #3</div>
+            <div class="mk-log"><span class="t">00:10</span><span class="a">analysis</span> Chamber C common</div>
+            <div class="mk-log"><span class="t">00:12</span><span class="a">verdict</span> Root cause found</div>
+          </div>
+          <div class="mk-p" style="border-right: none">
+            <div class="pl">Suspect Machines</div>
+            <div class="mk-sus"><span>Etch #1</span><div class="btr"><div class="bf l" style="width: 15%"></div></div></div>
+            <div class="mk-sus"><span>Etch #2</span><div class="btr"><div class="bf l" style="width: 10%"></div></div></div>
+            <div class="mk-sus"><span class="hit">Etch #3</span><div class="btr"><div class="bf h" style="width: 94%"></div></div></div>
+            <div class="mk-sus"><span>Dep #1</span><div class="btr"><div class="bf l" style="width: 8%"></div></div></div>
+          </div>
+          <div class="mk-ft">
+            <div>
+              <div class="vl">Root Cause: Etching Machine #3</div>
+              <div class="vd">One faulty machine &mdash; 23 batches affected.</div>
+            </div>
+            <button>Generate Hold Order &rarr;</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 7 · Architecture -->
+    <div class="slide">
+      <div class="label">Architecture</div>
+      <h2>Agents on fab data, <span class="sub">memory that learns.</span></h2>
+      <div class="hotl-banner">🧑‍🔧 HOTL &mdash; Human on the Loop</div>
+      <div class="arch">
+        <div class="arch-eng">
+          <div class="ico">🧑‍🔧</div>
+          <h3>Yield Engineer</h3>
+          <p>ask &amp; review</p>
+        </div>
+        <div class="arch-link"><div class="a">&harr;</div></div>
+        <div class="fb">
+          <span class="fb-label">Foundry Brain</span>
+          <div class="cc">
+            <span class="cc-label">Claude Code</span>
+            <div class="arch-grid">
+              <div class="chip blue">🎯 Fault Analysis</div>
+              <div class="chip">🧱 G-Stack</div>
+              <div class="chip blue">🧠 G-Brain</div>
+            </div>
+          </div>
+          <div class="conn-row">
+            <div class="conn"><div class="line solo"></div></div>
+            <div></div>
+            <div class="conn"><div class="line solo"></div></div>
+          </div>
+          <div class="arch-grid">
+            <div class="store">
+              <h4>🗄️ SQL Data</h4>
+              <p>Sensors · Production · Inspection</p>
+            </div>
+            <div></div>
+            <div class="store">
+              <h4>🔎 Vector DB</h4>
+              <p>Past analyses</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="stall">
+        Its memory <b class="gr">improves after every investigation.</b>
+      </div>
+    </div>
+
+    <!-- 8 · Market -->
+    <div class="slide">
+      <div class="label">Market</div>
+      <h2>Start with Rapidus. <span class="sub">Expand to every fab.</span></h2>
+      <div class="mkt">
+        <div class="mkt-bars">
+          <div class="mkt-bar"><div class="v b">$300&ndash;600B</div><div class="l">Lost to defects every year</div></div>
+          <div class="mkt-bar"><div class="v g">~1,200</div><div class="l">Fabs worldwide</div></div>
+          <div class="mkt-bar"><div class="v a">$500B+</div><div class="l">New fabs being built</div></div>
+        </div>
+        <div class="mkt-steps">
+          <div class="mkt-s"><h4>Wedge &rarr; Rapidus &amp; new fabs</h4></div>
+          <div class="mkt-s"><h4>Expand &rarr; Advanced fabs</h4></div>
+          <div class="mkt-s"><h4>Global &rarr; Every fab on earth</h4></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 9 · Close -->
+    <div class="slide s-close">
+      <div class="q">
+        Faster yield improvement<br />creates
+        <strong>massive value.</strong>
+      </div>
+      <h1>Foundry Brain</h1>
+      <div class="meta">Transpose &times; Ritsumeikan &times; OUVC</div>
+    </div>
+
+    <div class="nav" id="nav"></div>
+    <div class="sn" id="sn">1 / 9</div>
+    <script>
+      const ss = document.querySelectorAll(".slide"),
+        nav = document.getElementById("nav"),
+        sn = document.getElementById("sn");
+      let c = 0;
+      ss.forEach((_, i) => {
+        const d = document.createElement("button");
+        d.className = "nav-dot" + (i === 0 ? " active" : "");
+        d.onclick = () => go(i);
+        nav.appendChild(d);
+      });
+      function go(i) {
+        if (i < 0 || i >= ss.length) return;
+        ss[c].classList.remove("active");
+        nav.children[c].classList.remove("active");
+        c = i;
+        ss[c].classList.add("active");
+        nav.children[c].classList.add("active");
+        sn.textContent = c + 1 + " / " + ss.length;
+      }
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "ArrowRight" || e.key === " ") {
+          e.preventDefault();
+          go(c + 1);
+        }
+        if (e.key === "ArrowLeft") {
+          e.preventDefault();
+          go(c - 1);
+        }
+      });
+      let tx = 0;
+      document.addEventListener("touchstart", (e) => {
+        tx = e.touches[0].clientX;
+      });
+      document.addEventListener("touchend", (e) => {
+        const d = tx - e.changedTouches[0].clientX;
+        if (Math.abs(d) > 50) d > 0 ? go(c + 1) : go(c - 1);
+      });
+    </script>
+  </body>
+</html>
