@@ -12,7 +12,7 @@ import WaferField from "./WaferField";
 import { FactoryIcon, SensorIcon, InspectIcon } from "@/components/icons";
 
 const GITHUB = "https://github.com/kaorulego5x/foundry-brain";
-const PITCH_VIDEO_ID = "1MBw3zP2_a7A0P9W6Gbg6ZVjxRbNwO1Vj";
+const PITCH_VIDEO_ID = "1lMrOz0BlUc8qfjeQgwoEQ_6vatHHjzik";
 const PITCH_VIDEO_EMBED = `https://drive.google.com/file/d/${PITCH_VIDEO_ID}/preview`;
 const PITCH_VIDEO_LINK = `https://drive.google.com/file/d/${PITCH_VIDEO_ID}/view`;
 
@@ -36,7 +36,8 @@ function ArrowRight({ className }: { className?: string }) {
 }
 
 export default function LandingPage() {
-  // drive the embedded pitch deck (same-origin iframe listens for arrow keys)
+  // drive the embedded pitch deck (same-origin iframe listens for arrow keys;
+  // the deck scales itself to fit whatever viewport it gets)
   const deckRef = useRef<HTMLIFrameElement>(null);
   const stepDeck = (dir: 1 | -1) => {
     const w = deckRef.current?.contentWindow as
@@ -63,11 +64,11 @@ export default function LandingPage() {
           <span style={mono} className="text-sm font-medium tracking-[0.18em] text-[#e8ede9]">
             FOUNDRY BRAIN
           </span>
-          <div className="ml-auto flex items-center gap-6">
+          <div className="ml-auto flex items-center gap-4 sm:gap-6">
             <Link
               href="/"
               style={mono}
-              className="text-xs text-slate-400 transition hover:text-[#e8ede9]"
+              className="hidden text-xs text-slate-400 transition hover:text-[#e8ede9] sm:inline"
             >
               Live demo
             </Link>
@@ -76,7 +77,7 @@ export default function LandingPage() {
               target="_blank"
               rel="noreferrer"
               style={mono}
-              className="text-xs text-slate-400 transition hover:text-[#e8ede9]"
+              className="hidden text-xs text-slate-400 transition hover:text-[#e8ede9] sm:inline"
             >
               Pitch deck
             </a>
@@ -133,14 +134,14 @@ export default function LandingPage() {
           initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.15, duration: 0.7, ease: "easeOut" }}
-          className="pointer-events-none relative z-10 mx-auto flex h-full max-w-6xl flex-col justify-center px-6"
+          className="pointer-events-none relative z-10 mx-auto flex h-full max-w-6xl flex-col justify-end px-6 pb-16 md:justify-center md:pb-0"
         >
-          <p style={mono} className="mb-5 text-[11px] tracking-[0.3em] text-[#22c55e]">
+          <p style={mono} className="mb-5 text-[10px] tracking-[0.3em] text-[#22c55e] sm:text-[11px]">
             COMPANY BRAIN · BUILT ON G-STACK &amp; G-BRAIN
           </p>
           <h1
             style={display}
-            className="max-w-3xl text-5xl font-bold leading-[1.05] tracking-tight md:text-7xl"
+            className="max-w-3xl text-4xl font-bold leading-[1.05] tracking-tight sm:text-5xl md:text-7xl"
           >
             The OS for the
             <br />
@@ -151,13 +152,13 @@ export default function LandingPage() {
             three systems, finds the root-cause machine, and answers the only question that
             matters — hold or ship — in minutes, not days.
           </p>
-          <div className="pointer-events-auto mt-9 flex flex-wrap items-center gap-4">
+          <div className="pointer-events-auto mt-9 flex flex-wrap items-center gap-3 sm:gap-4">
             <a
               href={GITHUB}
               target="_blank"
               rel="noreferrer"
               style={mono}
-              className="flex items-center gap-2 rounded-md bg-[#22c55e] px-5 py-3 text-sm font-medium text-[#0a0f0d] transition hover:bg-[#4ade80]"
+              className="flex w-full items-center justify-center gap-2 rounded-md bg-[#22c55e] px-5 py-3 text-sm font-medium text-[#0a0f0d] transition hover:bg-[#4ade80] sm:w-auto"
             >
               Open GitHub
               <ArrowRight />
@@ -165,7 +166,7 @@ export default function LandingPage() {
             <Link
               href="/"
               style={mono}
-              className="rounded-md border border-white/15 px-5 py-3 text-sm text-slate-300 transition hover:border-white/40 hover:text-white"
+              className="flex w-full items-center justify-center rounded-md border border-white/15 px-5 py-3 text-sm text-slate-300 transition hover:border-white/40 hover:text-white sm:w-auto"
             >
               Open the live demo
             </Link>
@@ -380,8 +381,8 @@ RECOMMEND  : HOLD affected lots — do not ship pending re-measure`}
           </p>
 
           <div className="mt-10 overflow-hidden rounded-2xl border border-slate-200 bg-[#0a0f0d] shadow-sm">
-            {/* live, navigable preview of the deck */}
-            <div className="relative aspect-[16/9] w-full">
+            {/* live, navigable preview of the deck — it scales itself to fit */}
+            <div className="relative aspect-[16/9] w-full overflow-hidden">
               <iframe
                 ref={deckRef}
                 src="/slides.html"
@@ -408,7 +409,7 @@ RECOMMEND  : HOLD affected lots — do not ship pending re-measure`}
             </div>
             <div className="flex items-center gap-2 border-t border-white/[0.08] px-5 py-4">
               <span style={mono} className="text-xs text-slate-400">
-                flip through right here, or open it full-screen
+                the hackathon deck · 18 slides
               </span>
               <a
                 href="/slides.html"

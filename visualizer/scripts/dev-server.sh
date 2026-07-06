@@ -55,7 +55,12 @@ cmd_start() {
   echo "[$(date -u +%Y-%m-%dT%H:%M:%SZ)] starting dev server on port $PORT" >> "$LOG_FILE"
 
   # Fully detach from the invoking shell so the process survives Cursor task cleanup.
-  setsid nohup npm run dev >> "$LOG_FILE" 2>&1 < /dev/null &
+  # (setsid is Linux-only; macOS falls back to plain nohup)
+  if command -v setsid >/dev/null 2>&1; then
+    setsid nohup npm run dev >> "$LOG_FILE" 2>&1 < /dev/null &
+  else
+    nohup npm run dev >> "$LOG_FILE" 2>&1 < /dev/null &
+  fi
   disown
 
   for _ in $(seq 1 60); do

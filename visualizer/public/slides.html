@@ -25,9 +25,20 @@
         --green: #248a3d;
         --amber: #b25000;
       }
-      html,
-      body {
+      html {
         height: 100%;
+        background: #0b0b0c; /* letterbox behind the scaled stage */
+        overflow: hidden;
+      }
+      /* The deck is designed at a fixed 1440×810 stage; JS scales it to fit
+         any window or iframe, so slides shrink proportionally on small screens. */
+      body {
+        width: 1440px;
+        height: 810px;
+        position: absolute;
+        left: 0;
+        top: 0;
+        transform-origin: top left;
         font-family: "Inter", system-ui, sans-serif;
         background: var(--white);
         color: var(--text);
@@ -1787,6 +1798,14 @@
         const d = tx - e.changedTouches[0].clientX;
         if (Math.abs(d) > 50) d > 0 ? go(c + 1) : go(c - 1);
       });
+      // scale the fixed 1440×810 stage to fit the window / iframe
+      function fitStage() {
+        const s = Math.min(innerWidth / 1440, innerHeight / 810);
+        document.body.style.transform =
+          "translate(" + (innerWidth - 1440 * s) / 2 + "px," + (innerHeight - 810 * s) / 2 + "px) scale(" + s + ")";
+      }
+      addEventListener("resize", fitStage);
+      fitStage();
     </script>
   </body>
 </html>

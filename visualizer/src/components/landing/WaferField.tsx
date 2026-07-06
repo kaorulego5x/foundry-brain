@@ -142,7 +142,15 @@ export default function WaferField() {
       targetYaw = 0;
       targetPitchOff = 0;
     };
+    // touch: a finger drag drives the same interaction as the mouse; when the
+    // finger lifts, the wafer settles back and the dies recover
+    const onUp = (e: PointerEvent) => {
+      if (e.pointerType === "touch") onLeave();
+    };
     window.addEventListener("pointermove", onMove);
+    window.addEventListener("pointerdown", onMove);
+    window.addEventListener("pointerup", onUp);
+    window.addEventListener("pointercancel", onUp);
     window.addEventListener("pointerleave", onLeave);
 
     let raf = 0;
@@ -161,12 +169,18 @@ export default function WaferField() {
       const heroT = isHero ? intro : 1;
 
       const restCx = (width > 860 ? w.fx : w.fxNarrow) * width;
+      // portrait: the wafer floats in the upper half, above the copy
+      const fyEff = width > 860 ? w.fy : Math.min(w.fy, 0.30);
       const restCy =
-        w.fy * height + (reduceMotion ? 0 : Math.sin(elapsed * w.bobSpeed + w.phase) * w.bobAmp);
+        fyEff * height + (reduceMotion ? 0 : Math.sin(elapsed * w.bobSpeed + w.phase) * w.bobAmp);
       const cx = isHero ? width / 2 + (restCx - width / 2) * heroT : restCx;
       const cy = isHero ? height * 0.5 + (restCy - height * 0.5) * heroT : restCy;
 
-      const diameter = Math.min(width * 0.58, height * 0.92) * w.scale;
+      // portrait/mobile gets a width-driven size so the wafer stays as
+      // commanding as it is on desktop
+      const diameter =
+        (width > 860 ? Math.min(width * 0.58, height * 0.92) : Math.min(width * 0.9, height * 0.52)) *
+        w.scale;
       const spacing = diameter / GRID;
       const f = 560; // shorter focal length = stronger perspective
 
@@ -295,9 +309,13 @@ export default function WaferField() {
       cancelAnimationFrame(raf);
       ro.disconnect();
       window.removeEventListener("pointermove", onMove);
+      window.removeEventListener("pointerdown", onMove);
+      window.removeEventListener("pointerup", onUp);
+      window.removeEventListener("pointercancel", onUp);
       window.removeEventListener("pointerleave", onLeave);
     };
   }, []);
 
-  return <canvas ref={canvasRef} className="h-full w-full" aria-hidden />;
+  // pan-y: horizontal drags rotate the wafer, vertical swipes still scroll
+  return <canvas ref={canvasRef} className="h-full w-full" style={{ touchAction: "pan-y" }} aria-hidden />;
 }
